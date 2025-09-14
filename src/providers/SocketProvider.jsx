@@ -1,13 +1,20 @@
 import { createContext, useEffect, useMemo, useState } from "react";
 import { io } from "socket.io-client";
-import { REQUEST } from "../constants/chat";
+import { METHODS, TYPES } from "../constants/chat";
+import { useParams } from "react-router-dom";
 
-export const SocketContext = createContext();
+export const SocketContext = createContext({
+  isConnected: null,
+  socket: null
+});
 
 const SocketProvider = ({ children }) => {
-  const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4MDBhNjIxYjM2MWJmNDhjN2NiN2I3ZCIsImVtYWlsIjoienhjdndlcnQzNDU4QGdtYWlsLmNvbSIsInVzZXJuYW1lIjoiTGVvbmVsIiwiaWF0IjoxNzQ0ODcyOTk3LCJleHAiOjE3NDQ5NTkzOTd9.e2wFq4dxOMz1T1snOOl7aJtH2IJCw15vrxcBXKrIsEg";
+  const token = localStorage.token
   const socket = useMemo(() => io(`${process.env.REACT_APP_BASE_URL}`, { extraHeaders: { token } }), []);
   const [isConnected, setIsConnected] = useState(false);
+  const params = useParams()
+  console.log(params);
+
 
   socket.on('connect', () => {
     setIsConnected(true);
@@ -18,7 +25,8 @@ const SocketProvider = ({ children }) => {
   });
 
   useEffect(() => {
-    socket.emit(REQUEST.AUTH, token);
+    socket.emit(TYPES.AUTH, token);
+    socket.emit(`${TYPES.CHANNEL}_${METHODS.READ_BY_CHANNEL_ID}`)
   }, [socket]);
 
   return (

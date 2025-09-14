@@ -1,4 +1,4 @@
-import { HStack, VStack } from "@chakra-ui/react"
+import { Box, Flex, HStack, VStack } from "@chakra-ui/react"
 import { Outlet } from "react-router-dom"
 import Header from "./Header"
 import MenuBar from "./MenuBar"
@@ -11,7 +11,9 @@ const Layout = () => {
             <HStack w={"full"} flexGrow={1} gap={0} style={{ margin: 0 }} color={"white"} bg={"var(--mainColor)"} pr={2}>
                 <SideBar />
                 <MenuBar />
-                <Outlet />
+                <Flex h={"full"} flex={"1 1 0"}>
+                    <Outlet />
+                </Flex>
             </HStack>
         </VStack>
     )

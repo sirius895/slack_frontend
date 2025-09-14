@@ -1,6 +1,7 @@
 :root {
     --mainColor: #501e50ff;
-    --secondaryColor: #5c2f5c;
+    --secondaryColor: #613861;
+    --fontColor: #fdfdfd8a;
     --activeColor: #fdfdfd8a;
     --headerH: 50px;
     --sideW: 72px;

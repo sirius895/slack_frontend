@@ -4,7 +4,7 @@ export const STATUS = {
     FAILED: 'FAILED',
 }
 
-export const REQUEST = {
+export const TYPES = {
     AUTH: 'AUTH',
     CHANNEL: 'CHANNEL',
     MESSAGE: 'MESSAGE',
@@ -12,9 +12,13 @@ export const REQUEST = {
     TYPING: 'TYPING',
 }
 
-export const METHOD = {
+export const METHODS = {
     CREATE: 'CREATE',
     READ: 'READ',
     UPDATE: 'UPDATE',
     DELETE: 'DELETE',
+    READ_BY_CHANNEL_ID: "READ_BY_CHANNEL_ID",
+    READ_BY_PARENT_ID: "READ_BY_PARENT_ID",
+    READ_BY_PARENT_ID: "READ_BY_PARENT_ID",
+
 }

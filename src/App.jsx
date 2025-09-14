@@ -11,16 +11,14 @@ import "./App.css";
 const App = () => {
   return (
     <Router>
-      <AuthProvider>
-        <ChakraProvider>
+      <ChakraProvider>
+        <AuthProvider>
           <QueryProvider>
-            <SocketProvider>
-              <AppRoutes />
-              <ToastContainer />
-            </SocketProvider>
+            <AppRoutes />
+            <ToastContainer />
           </QueryProvider>
-        </ChakraProvider>
-      </AuthProvider>
+        </AuthProvider>
+      </ChakraProvider>
     </Router>
   );
 }

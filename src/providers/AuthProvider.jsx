@@ -1,7 +1,7 @@
 import { createContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { tokenVerify } from "../api/auth";
-import { authRouter } from "../constants/urls";
+import { authRouter, whiteList } from "../constants/urls";
 
 export const AuthContext = createContext({
     user: { username: "", email: "", avatar: "" },
@@ -25,10 +25,12 @@ const AuthProvider = (props) => {
                 await tokenVerify(localStorage.token)
                 goToPage(sessionStorage.nextURL ? sessionStorage.nextURL : "/chatting/home/@/@")
             } catch (error) {
+                if (whiteList.includes(href)) { goToPage(href); return; }
                 goToPage("/")
             }
         })()
-    }, [href, localStorage.getItem("token")])
+    }, [href])
+    
     return (
         <AuthContext.Provider value={value}>{props.children}</AuthContext.Provider>
     )

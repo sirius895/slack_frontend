@@ -6,15 +6,15 @@ import SignUp from "../pages/auth/SignUp"
 import Icons from "../pages/Icons"
 import Layout from "../layouts"
 import Main from "../components/Main"
+import SocketProvider from "../providers/SocketProvider"
 
 const routes = [
     { path: "/", element: < SignIn /> },
     { path: "/signup", element: < SignUp /> },
     {
-        path: "/chatting/:page/:channel/:message", element: <Layout />, children: {
-            path: "",
-            element: <Main />
-        }
+        path: "/chatting/:page/:channel/:message", element: <Layout />, children: [{
+            path: "", element: <SocketProvider><Main /></SocketProvider>
+        }]
     },
     { path: "/icons", element: < Icons /> },
     { path: "*", element: < NotFound /> }
