@@ -6,7 +6,7 @@ import { AuthContext } from "../../providers/AuthProvider"
 import { SocketContext } from "../../providers/SocketProvider"
 import toast from "../../utils/toast"
 import ChannelDeleteModal from "../modals/ChannelDeleteModal"
-import CreateChannelModal from "../modals/ChannelModal"
+import DMModal from "../modals/DMModal"
 
 const DMList = () => {
     const [showDM, setShowDM] = useState(true)
@@ -47,7 +47,7 @@ const DMList = () => {
 
     return (
         <VStack w={"full"} paddingInline={2} >
-            <CreateChannelModal isChannel={true} selectedID={selectedID} setSelectedID={setSelectedID} modalStatus={modalStatus} setModalStatus={setModalStatus} />
+            <DMModal isChannel={false} selectedID={selectedID} setSelectedID={setSelectedID} modalStatus={modalStatus} setModalStatus={setModalStatus} />
             <ChannelDeleteModal selectedID={selectedID} modalStatus={modalStatus} setSelectedID={setSelectedID} setModalStatus={setModalStatus} />
             <HStack w={"full"} gap={4} onClick={() => setShowDM(!showDM)}>
                 {showDM ? <FaCaretDown /> : <FaCaretRight />}
