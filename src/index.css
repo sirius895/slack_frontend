@@ -1,0 +1,12 @@
+:root {
+    --mainColor: #501e50ff;
+    --secondaryColor: #5c2f5c;
+    --activeColor: #fdfdfd8a;
+    --headerH: 50px;
+    --sideW: 72px;
+    --menuW: 360px;
+}
+
+* {
+    margin: 0 !important
+}

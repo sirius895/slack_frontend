@@ -1,21 +1,27 @@
 import { ChakraProvider } from "@chakra-ui/react";
+import { BrowserRouter as Router } from "react-router-dom";
 import QueryProvider from "./providers/QueryProvider";
 import SocketProvider from "./providers/SocketProvider";
 import { ToastContainer } from "react-toastify";
+import AuthProvider from "./providers/AuthProvider";
 
 import AppRoutes from "./routes";
 import "./App.css";
 
 const App = () => {
   return (
-    <ChakraProvider>
-      <QueryProvider>
-        <SocketProvider>
-          <AppRoutes />
-          <ToastContainer />
-        </SocketProvider>
-      </QueryProvider>
-    </ChakraProvider>
+    <Router>
+      <AuthProvider>
+        <ChakraProvider>
+          <QueryProvider>
+            <SocketProvider>
+              <AppRoutes />
+              <ToastContainer />
+            </SocketProvider>
+          </QueryProvider>
+        </ChakraProvider>
+      </AuthProvider>
+    </Router>
   );
 }
 

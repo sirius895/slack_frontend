@@ -4,7 +4,7 @@ import useUser from "../api/useUsers";
 import Message from "../components/Message";
 import SendMessage from "../components/SendMessage";
 import { METHOD, REQUEST, STATUS } from "../constants/chat";
-import { SocketContext } from "../context/SocketProvider";
+import { SocketContext } from "../providers/SocketProvider";
 import { formatDate } from "../utils";
 
 const Messages = ({ channelId, messageId, ...props }) => {

@@ -2,7 +2,7 @@ import { Avatar, Box, Flex, HStack, Text } from "@chakra-ui/react";
 import { useContext, useState } from "react";
 import { FaEdit, FaRegTrashAlt } from "react-icons/fa";
 import { METHOD, REQUEST } from "../constants/chat";
-import { SocketContext } from "../context/SocketProvider";
+import { SocketContext } from "../providers/SocketProvider";
 import ChannelEditModal from "./ChannelEditModal";
 
 const ChannelHeader = ({ channel, ...props }) => {

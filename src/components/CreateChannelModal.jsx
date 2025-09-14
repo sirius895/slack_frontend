@@ -2,7 +2,7 @@ import { Box, Button, Checkbox, Flex, FormLabel, Input, Modal, ModalBody, ModalC
 import { useContext, useEffect, useState } from "react";
 import useUser from "../api/useUsers";
 import { METHOD, REQUEST, STATUS } from "../constants/chat";
-import { SocketContext } from "../context/SocketProvider";
+import { SocketContext } from "../providers/SocketProvider";
 import toast from "../utils/toast";
 
 const CreateChannelModal = (props) => {

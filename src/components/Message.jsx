@@ -4,7 +4,7 @@ import { FaEdit, FaRegCommentDots, FaRegSmile, FaRegTrashAlt } from "react-icons
 import { Link, useNavigate } from "react-router-dom";
 import useUser from "../api/useUsers";
 import { METHOD, REQUEST } from "../constants/chat";
-import { SocketContext } from "../context/SocketProvider";
+import { SocketContext } from "../providers/SocketProvider";
 import { formatDate, formatTime } from "../utils";
 import Emoticon from "./Emoticon";
 import Emoticons from "./Emoticons";

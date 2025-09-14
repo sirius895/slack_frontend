@@ -6,7 +6,7 @@ import ChannelHeader from "../components/ChannelHeader";
 import CreateChannelModal from "../components/CreateChannelModal";
 import Messages from "../components/Messages";
 import { METHOD, REQUEST, STATUS } from "../constants/chat";
-import { SocketContext } from "../context/SocketProvider";
+import { SocketContext } from "../providers/SocketProvider";
 
 const HomePage = () => {
   const navigate = useNavigate();
@@ -105,7 +105,7 @@ const HomePage = () => {
               Create channel
             </Button>
           </VStack>
-          {channel ? (
+          {/* {channel ? (
             <VStack flexGrow={1} align="stretch">
               <ChannelHeader
                 borderBottom='1px solid #ccc'
@@ -146,7 +146,7 @@ const HomePage = () => {
                 </Text>
               </VStack>
             </Flex>
-          )}
+          )} */}
         </Flex>
       </Flex>
       <CreateChannelModal

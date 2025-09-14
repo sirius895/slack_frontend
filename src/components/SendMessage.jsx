@@ -2,7 +2,7 @@ import { Button, Flex, Textarea } from "@chakra-ui/react";
 import { useContext, useRef, useState } from "react";
 import { FaPaperPlane } from "react-icons/fa";
 import { METHOD, REQUEST } from "../constants/chat";
-import { SocketContext } from "../context/SocketProvider";
+import { SocketContext } from "../providers/SocketProvider";
 
 const SendMessage = ({ isEditing, channelId, messageId, value, onClose }) => {
     const { socket } = useContext(SocketContext);
