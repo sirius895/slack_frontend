@@ -1,13 +1,12 @@
 import { Avatar, Button, HStack, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Text, VStack } from "@chakra-ui/react"
-import { useCallback, useContext, useEffect, useState } from "react"
+import { useContext, useEffect, useState } from "react"
 import { FaCheck } from "react-icons/fa"
-import { METHODS, TYPES } from "../constants/chat"
-import { AuthContext } from "../providers/AuthProvider"
-import { SocketContext } from "../providers/SocketProvider"
-import toast from "../utils/toast"
+import { METHODS, TYPES } from "../../constants/chat"
+import { AuthContext } from "../../providers/AuthProvider"
+import { SocketContext } from "../../providers/SocketProvider"
 
 const ChannelModal = (props) => {
-  const { isChannel, isOpen, setIsOpen, selectedID, modalStatus } = props
+  const { isChannel, selectedID, setSelectedID, modalStatus, setModalStatus } = props
   const { users, socket, channels, setChannels } = useContext(SocketContext)
   const { user } = useContext(AuthContext)
   const initState = { name: "", creator: "", members: [], isChannel };
@@ -38,16 +37,13 @@ const ChannelModal = (props) => {
     socket.emit(`${TYPES.CHANNEL}_${METHODS.UPDATE}`, channel)
     handleCancel()
   }
-
+  
   const handleCancel = () => {
-    setIsOpen(false)
+    // setIsOpen(false)
+    setModalStatus("init")
     setChannel(initState)
+    setSelectedID(-1)
   }
-
-  const listenCreate = useCallback((status, data) => {
-    if (status && data) setChannels([...channels, data])
-    else toast.ERROR(data)
-  }, [channels])
 
   useEffect(() => {
     if (selectedID >= 0) {
@@ -64,11 +60,6 @@ const ChannelModal = (props) => {
   }, [user._id])
 
   useEffect(() => {
-    socket.on(`${TYPES.CHANNEL}_${METHODS.CREATE}`, listenCreate)
-    return () => socket.removeListener(`${TYPES.CHANNEL}_${METHODS.CREATE}`, listenCreate)
-  }, [listenCreate])
-
-  useEffect(() => {
     if (users.length) setTmp(users)
   }, [users])
 
@@ -79,9 +70,9 @@ const ChannelModal = (props) => {
   }, [keyword])
 
   return (
-    <Modal isOpen={isOpen} isCentered >
+    <Modal isOpen={modalStatus === "add" || modalStatus === "edit"} isCentered >
       <ModalOverlay />
-      <ModalContent w={"full"} h="50%" alignItems={"center"} justifyContent={"center"}>
+      <ModalContent w={"full"} h="50%" minH={"400px"} alignItems={"center"} justifyContent={"center"}>
         <ModalHeader display={"flex"} w={"full"} alignItems={"center"} justifyContent={"center"}>{(modalStatus === "add" && `Create`) || (modalStatus === "edit" && `Update`)} a channel</ModalHeader>
         <ModalBody display={"flex"} flexDir={"column"} paddingInline={4} w={"full"} gap={4}>
           <Input w={"full"} name="name" placeholder="Chanel Name" value={channel.name} onChange={changeChannel} />
