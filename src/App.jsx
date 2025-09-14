@@ -13,12 +13,12 @@ const App = () => {
     <Router>
       <ChakraProvider>
         <AuthProvider>
-          <SocketProvider>
-            <QueryProvider>
-              <AppRoutes />
-              <ToastContainer />
-            </QueryProvider>
-          </SocketProvider>
+          {/* <SocketProvider> */}
+          <QueryProvider>
+            <AppRoutes />
+            <ToastContainer />
+          </QueryProvider>
+          {/* </SocketProvider> */}
         </AuthProvider>
       </ChakraProvider>
     </Router>

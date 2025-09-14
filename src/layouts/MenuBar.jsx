@@ -4,7 +4,7 @@ import DMList from "../components/main/DMList"
 
 const MenuBar = () => {
     return (
-        <VStack w={"var(--menuW)"} h={"calc(100vh - var(--headerH))"} bg={"var(--secondaryColor)"} rounded={"8px 0 0 8px"} gap={4} paddingBlock={4} overflowY={"auto"}>
+        <VStack minW={"var(--menuW)"} h={"calc(100vh - var(--headerH))"} color={"white"} bg={"var(--secondaryColor)"} rounded={"8px 0 0 8px"} gap={4} paddingBlock={4} overflowY={"auto"}>
             <ChannelList />
             <DMList />
         </VStack>

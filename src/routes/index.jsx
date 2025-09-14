@@ -5,14 +5,14 @@ import NotFound from "../pages/NotFound"
 import SignUp from "../pages/auth/SignUp"
 import Icons from "../pages/Icons"
 import Layout from "../layouts"
-import Main from "../components/Main"
+import Main from "../components/main/Main"
 import SocketProvider from "../providers/SocketProvider"
 
 const routes = [
     { path: "/", element: < SignIn /> },
     { path: "/signup", element: < SignUp /> },
     {
-        path: "/chatting/:page/:channel/:message", element: <Layout />, children: [{
+        path: "/chatting/:page/:channel/:message", element: <SocketProvider><Layout /></SocketProvider>, children: [{
             path: "", element: <Main />
         }]
     },

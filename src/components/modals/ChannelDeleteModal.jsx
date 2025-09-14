@@ -1,5 +1,5 @@
 import { Button, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Text } from "@chakra-ui/react"
-import { useContext, useState } from "react"
+import { useContext } from "react"
 import { METHODS, TYPES } from "../../constants/chat"
 import { AuthContext } from "../../providers/AuthProvider"
 import { SocketContext } from "../../providers/SocketProvider"

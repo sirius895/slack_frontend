@@ -8,7 +8,7 @@ const Header = () => {
             <HStack><FaArrowRight color={"var(--fontColor)"} /></HStack>
             <HStack border={"2px solid var(--secondaryColor)"} rounded={"8px"} pr={4} >
                 <Input w={"400px"} border={"none"} _focus={{ outline: "none" }} h={"36px"} />
-                <FaSearch />
+                <FaSearch color={"var(--fontColor)"} />
             </HStack>
         </HStack>
     )

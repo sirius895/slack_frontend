@@ -1,6 +1,7 @@
 import { HStack, Text, VStack } from "@chakra-ui/react"
 import { useCallback, useContext, useEffect, useState } from "react"
 import { FaCaretDown, FaCaretRight, FaEdit, FaPlus, FaTrash } from "react-icons/fa"
+import { useNavigate } from "react-router-dom"
 import { METHODS, TYPES } from "../../constants/chat"
 import { AuthContext } from "../../providers/AuthProvider"
 import { SocketContext } from "../../providers/SocketProvider"
@@ -10,10 +11,11 @@ import CreateChannelModal from "../modals/ChannelModal"
 
 const ChannelList = () => {
     const [showCh, setShowCh] = useState(true)
-    const { socket, channels, setChannels } = useContext(SocketContext)
+    const { socket, channels, setChannels, setCurChannel } = useContext(SocketContext)
     const [selectedID, setSelectedID] = useState(-1)
     const [modalStatus, setModalStatus] = useState("init")
     const { user } = useContext(AuthContext)
+    const navigate = useNavigate()
 
     const listenCreate = useCallback((status, data) => {
         if (status && data) setChannels([...channels, data])
@@ -56,8 +58,11 @@ const ChannelList = () => {
             <VStack w={"full"} pl={2} py={2}>
                 {showCh && channels.map((channel, i) => {
                     return (
-                        channel.isChannel && <HStack key={i} w={'full'} gap={4} rounded={8} px={2} py={1} _hover={{ backgroundColor: "var(--fontColor)" }} cursor={"pointer"} justify={"space-between"} onClick={() => setSelectedID(i)}>
-                            <HStack>
+                        channel.isChannel &&
+                        <HStack key={i} w={'full'} gap={4}
+                            rounded={8} px={2} py={1} _hover={{ backgroundColor: "var(--fontColor)" }}
+                            cursor={"pointer"} justify={"space-between"} onClick={() => { setCurChannel(channel); navigate(`/chatting/home/${channel._id}/@`); }}>
+                            <HStack gap={2}>
                                 <Text>#</Text>
                                 <Text>{channel.name}</Text>
                             </HStack>

@@ -37,9 +37,8 @@ const ChannelModal = (props) => {
     socket.emit(`${TYPES.CHANNEL}_${METHODS.UPDATE}`, channel)
     handleCancel()
   }
-  
+
   const handleCancel = () => {
-    // setIsOpen(false)
     setModalStatus("init")
     setChannel(initState)
     setSelectedID(-1)

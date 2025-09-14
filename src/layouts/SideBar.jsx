@@ -16,7 +16,7 @@ const SideBar = () => {
         { label: "HOME", icon: FaIcons.FaHome, key: "home" }
     ]
     return (
-        <VStack w={"var(--sideW)"} h={"full"} paddingBlock={4} bg={"var(--mainColor)"}>
+        <VStack minW={"var(--sideW)"} h={"full"} color={"white"} paddingBlock={4} bg={"var(--mainColor)"}>
             {
                 sideItems.map((v, i) => {
                     return (

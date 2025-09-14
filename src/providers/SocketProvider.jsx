@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useMemo, useState } from "react";
+import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 import { io } from "socket.io-client";
 import { METHODS, TYPES } from "../constants/chat";
@@ -12,15 +12,22 @@ export const SocketContext = createContext({
   users: [],
   setUsers: () => { },
   channels: [],
-  setChannels: () => { }
+  setChannels: () => { },
+  curChannel: {},
+  setCurChannel: () => { },
+  messages: [],
+  setMessages: () => { }
 });
 
 const SocketProvider = ({ children }) => {
   const token = localStorage.token;
   const [users, setUsers] = useState([])
   const [channels, setChannels] = useState([])
+  const [curChannel, setCurChannel] = useState({})
+  const [messages, setMessages] = useState([])
   const [isConnected, setIsConnected] = useState(false);
   const { user } = useContext(AuthContext)
+  const { channel, message } = useParams()
 
   const socket = useMemo(() => io(`${process.env.REACT_APP_BASE_URL}`, { extraHeaders: { token } }), [user._id]);
 
@@ -30,11 +37,17 @@ const SocketProvider = ({ children }) => {
 
   socket.on('disconnect', () => {
     setIsConnected(false);
+    toast.ERROR("Socket disconnected!")
   });
 
   const listenChannelReadByUserID = (status, data) => {
-    if (status) setChannels(data);
-    else toast.ERROR(data)
+    if (status && data) setChannels(data);
+    else toast.ERROR(data.message)
+  }
+
+  const listenMessageReadByChannelID = (status, data) => {
+    if (status && data) setMessages(data)
+    else toast.ERROR(data.message)
   }
 
   useEffect(() => {
@@ -61,12 +74,24 @@ const SocketProvider = ({ children }) => {
     }
   }, [user._id])
 
+  useEffect(() => {
+    if (channel.length > 0) {
+      socket.emit(`${TYPES.MESSAGE}_${METHODS.READ_BY_CHANNEL_ID}`, channel)
+      socket.on(`${TYPES.MESSAGE}_${METHODS.READ_BY_CHANNEL_ID}`, listenMessageReadByChannelID)
+    }
+    return () => {
+      socket.removeListener(`${TYPES.MESSAGE}_${METHODS.READ_BY_CHANNEL_ID}`, listenMessageReadByChannelID)
+    }
+  }, [channel])
+
   return (
     <SocketContext.Provider
       value={{
         isConnected, socket,
         users, setUsers,
-        channels, setChannels
+        channels, setChannels,
+        curChannel, setCurChannel,
+        messages, setMessages
       }}
     >
       {children}
