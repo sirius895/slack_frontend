@@ -13,7 +13,7 @@ const routes = [
     { path: "/signup", element: < SignUp /> },
     {
         path: "/chatting/:page/:channel/:message", element: <Layout />, children: [{
-            path: "", element: <SocketProvider><Main /></SocketProvider>
+            path: "", element: <Main />
         }]
     },
     { path: "/icons", element: < Icons /> },

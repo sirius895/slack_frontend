@@ -4,12 +4,12 @@ import { tokenVerify } from "../api/auth";
 import { authRouter, whiteList } from "../constants/urls";
 
 export const AuthContext = createContext({
-    user: { username: "", email: "", avatar: "" },
+    user: { _id: "", username: "", email: "", avatar: "" },
     setUser: () => { }
 })
 
 const AuthProvider = (props) => {
-    const [user, setUser] = useState({ username: "", email: "", avatar: "" });
+    const [user, setUser] = useState({ _id: "", username: "", email: "", avatar: "" });
     const value = { user, setUser };
     const href = window.location.pathname;
 
@@ -22,7 +22,8 @@ const AuthProvider = (props) => {
         (async () => {
             if (!authRouter.includes(href)) sessionStorage.setItem("nextURL", href)
             try {
-                await tokenVerify(localStorage.token)
+                const _user = await tokenVerify(localStorage.token)
+                setUser(_user)
                 goToPage(sessionStorage.nextURL ? sessionStorage.nextURL : "/chatting/home/@/@")
             } catch (error) {
                 if (whiteList.includes(href)) { goToPage(href); return; }
@@ -30,7 +31,7 @@ const AuthProvider = (props) => {
             }
         })()
     }, [href])
-    
+
     return (
         <AuthContext.Provider value={value}>{props.children}</AuthContext.Provider>
     )
