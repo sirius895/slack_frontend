@@ -1,5 +1,5 @@
-import { HStack, Textarea, VStack } from "@chakra-ui/react"
-import { useContext, useEffect, useState } from "react"
+import { HStack, Text, Textarea, VStack } from "@chakra-ui/react"
+import { useContext, useEffect, useState, useRef } from "react"
 import { FaBold, FaItalic, FaPaperPlane, FaPlus, FaRegSmile } from "react-icons/fa"
 import { useParams } from "react-router-dom"
 import { METHODS, TYPES } from "../../constants/chat"
@@ -10,9 +10,11 @@ import Emoticons from "./Emoticons"
 
 const MessageEditor = ({ isForThread }) => {
     const { user } = useContext(AuthContext)
-    const { socket } = useContext(SocketContext)
+    const { socket, users } = useContext(SocketContext)
     const { channel: channelID, message: messageID } = useParams()
     const [emoShow, setEmoShow] = useState(false)
+    const [typingList, setTypingList] = useState([])
+    const timerRef = useRef({});
 
     const initState = {
         sender: "", channelID, mentios: [],
@@ -25,6 +27,7 @@ const MessageEditor = ({ isForThread }) => {
     const createMessage = () => socket.emit(`${TYPES.MESSAGE}_${METHODS.CREATE}`, message)
 
     const handleKeyDown = (e) => {
+        socket.emit(`${TYPES.TYPING}`, channelID);
         if (e.code === "Enter") {
             e.preventDefault()
             createMessage()
@@ -41,6 +44,21 @@ const MessageEditor = ({ isForThread }) => {
         }))
     }
 
+    const listenTyping = (status, data) => {
+        if (data.channelID == channelID) {
+            const removeUser = () => setTypingList(prev => prev.filter(user => user != data.user));
+            setTypingList((prev) => {
+                if (prev.some(user => user == data.user)) {
+                    clearTimeout(timerRef.current[data.user]);
+                    timerRef.current[data.user] = setTimeout(removeUser, 2000);
+                    return prev;
+                }
+                timerRef.current[data.user] = setTimeout(removeUser, 2000);
+                return [...prev, data.user];
+            });
+        }
+    }
+
     const removeEmos = (no) => {
         setMessage(msg => ({ ...msg, emoticons: msg.emoticons.filter((m, i) => i !== no) }))
     }
@@ -51,6 +69,8 @@ const MessageEditor = ({ isForThread }) => {
 
     useEffect(() => {
         if (channelID.length > 0) setMessage(m => ({ ...m, channelID }))
+        socket.on(TYPES.TYPING, listenTyping)
+        return () => socket.removeListener(TYPES.TYPING, listenTyping)
     }, [channelID])
 
     return (
@@ -58,16 +78,17 @@ const MessageEditor = ({ isForThread }) => {
             <HStack w={"full"} h={"40px"} px={4} gap={2} bg={"#d7d5d596"} color={"gray"}>
                 <FaBold />
                 <FaItalic />
+                {typingList.length > 0 && (
+                    <Text w={"full"} fontWeight={"bold"} fontSize="16px">
+                        {typingList.map(userId => users.find(user => user._id == userId)?.username).join(', ')} is typing...
+                    </Text>
+                )}
             </HStack>
-            <HStack w={"full"} flex={"1 1 0"}>
+            <VStack w={"full"} flex={"1 1 0"}>
                 <Textarea h={"full"} resize={"none"} border={"none"} _focus={{ outline: "none" }} onChange={changeContent} onKeyDown={handleKeyDown} value={message.content} />
-            </HStack>
-            <HStack w={"full"} px={4}>
-                {message.emoticons.map((emo, i) => {
-                    return (
-                        <Emoticon key={i} id={emo.code} onClick={() => removeEmos(i)} />
-                    )
-                })}
+            </VStack>
+            <HStack w={"full"} px={4} h={"32px"}>
+                {message.emoticons.map((emo, i) => (<Emoticon key={i} id={emo.code} onClick={() => removeEmos(i)} />))}
             </HStack>
             <HStack w={"full"} h={"40px"} justify={"space-between"} px={4} gap={2} color={"gray"}>
                 <HStack gap={2} cursor={"pointer"}>
@@ -81,7 +102,7 @@ const MessageEditor = ({ isForThread }) => {
                     <FaPaperPlane onClick={createMessage} />
                 </HStack>
             </HStack>
-        </VStack>
+        </VStack >
     )
 }
 

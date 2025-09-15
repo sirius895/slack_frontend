@@ -1,14 +1,14 @@
 import { HStack, Text, VStack } from "@chakra-ui/react"
-import { useContext, useState, useMemo } from "react"
+import { useContext, useMemo, useState } from "react"
 import { AiFillPushpin } from "react-icons/ai"
 import { FaCommentDots, FaRegSmile, FaTrash } from "react-icons/fa"
+import { useNavigate, useParams } from "react-router-dom"
 import { METHODS, TYPES } from "../../constants/chat"
 import { AuthContext } from "../../providers/AuthProvider"
 import { SocketContext } from "../../providers/SocketProvider"
 import Emoticon from "./Emoticon"
 import Emoticons from "./Emoticons"
 import UserAvatar from "./UserAvatar"
-import { useNavigate, useParams } from "react-router-dom"
 
 const Message = (props) => {
     const { message } = props
@@ -65,7 +65,6 @@ const Message = (props) => {
                             <Text>{emo.users.length}</Text>
                         </HStack>)
                     )}
-                    {/* {message.emoticons.map((emo, i) => (<Emoticon key={i} id={emo.code} onClick={() => handleEmos(emo.code)} />))} */}
                 </HStack>
             </VStack>
             <VStack h={"full"} justify={"center"}>
