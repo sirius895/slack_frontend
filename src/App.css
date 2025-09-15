@@ -1,7 +1,8 @@
-/* ::-webkit-scrollbar {
+::-webkit-scrollbar {
     width: 4px;
     height: 4px;
-} */
+    cursor: pointer;
+}
 
 ::-webkit-scrollbar-thumb {
     background: #1d19317e;

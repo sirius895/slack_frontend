@@ -60,14 +60,13 @@ const SocketProvider = ({ children }) => {
           const res = await api.get("/user")
           setUsers(res.data.payload)
         })()
-      } catch (error) {
-        toast.ERROR("Error Occured")
-      }
+      } catch (error) { toast.ERROR("Error Occured") }
     }
   }, [user._id])
 
   useEffect(() => {
     if (user._id) {
+      console.log(user);
       socket.emit(TYPES.AUTH, token);
       socket.emit(`${TYPES.CHANNEL}_${METHODS.READ_BY_USER_ID}`, user._id)
       socket.on(`${TYPES.CHANNEL}_${METHODS.READ_BY_USER_ID}`, listenChannelReadByUserID);

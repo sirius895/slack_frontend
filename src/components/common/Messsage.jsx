@@ -52,12 +52,16 @@ const Message = (props) => {
                 {message?.pinnedBy?.includes(user._id) && <AiFillPushpin size={"24px"} />}
             </VStack>
             {toolShow &&
-                <HStack pos={"absolute"} shadow={"0 0 3px black"} bg={"white"} rounded={4} px={4} py={2} gap={2} top={4} right={4}>
+                <HStack pos={"absolute"} shadow={"0 0 3px black"} bg={"white"} rounded={4} px={4} py={2} gap={4} top={4} right={4}>
                     <HStack gap={2} cursor={"pointer"} pos={"relative"} onMouseLeave={() => setEmoShow(false)}>
                         <FaRegSmile onClick={() => setEmoShow(!emoShow)} />
                         {emoShow && <Emoticons maxW={"250px"} pos={"absolute"} top={"100%"} right={0} handleEmos={handleEmos} />}
-                        <AiFillPushpin onClick={handlePin} />
-                        <FaCommentDots onClick={() => { setShowThread(true); navigate(`/chatting/home/${channel}/${message._id}`) }} />
+                        {!message.parentID &&
+                            <>
+                                < AiFillPushpin onClick={handlePin} />
+                                <FaCommentDots onClick={() => { setShowThread(true); navigate(`/chatting/home/${channel}/${message._id}`) }} />
+                            </>
+                        }
                         {message.sender._id === user._id && <FaTrash onClick={() => handleDelete(message._id)} />}
                     </HStack>
                 </HStack>}

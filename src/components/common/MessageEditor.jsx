@@ -17,14 +17,12 @@ const MessageEditor = ({ isForThread }) => {
     const initState = {
         sender: "", channelID, mentios: [],
         content: "", files: [], emoticons: [],
-        pinnedBy: [], isDraft: false, parentID: /* isForThread ? messageID : */ null, childCount: 0
+        pinnedBy: [], isDraft: false, parentID: isForThread ? messageID : null, childCount: 0
     }
     const [message, setMessage] = useState(initState);
     const changeContent = (e) => setMessage({ ...message, content: e.target.value });
 
-    const createMessage = () => {
-        socket.emit(`${TYPES.MESSAGE}_${METHODS.CREATE}`, { ...message })
-    }
+    const createMessage = () => socket.emit(`${TYPES.MESSAGE}_${METHODS.CREATE}`, message)
 
     const handleKeyDown = (e) => {
         if (e.code === "Enter") {

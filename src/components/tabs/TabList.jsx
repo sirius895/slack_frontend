@@ -4,14 +4,14 @@ import { SocketContext } from "../../providers/SocketProvider"
 import { useParams } from "react-router-dom";
 
 const TabList = (props) => {
+    const { curTab, setCurTab } = props
     const { channels } = useContext(SocketContext);
     const { channel } = useParams();
     const [curChannel, setCurChannel] = useState({})
 
     useEffect(() => {
         setCurChannel(channels.find(c => c._id === channel))
-    }, [channel])
-    const { curTab, setCurTab } = props
+    }, [channel, channels])
 
     return (
         <VStack w={"full"} h={"100px"} px={4} pt={4} shadow={"0 0 4px black"}>
