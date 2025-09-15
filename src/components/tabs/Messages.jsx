@@ -14,9 +14,12 @@ const Messages = () => {
         else toast.ERROR(data.message)
     }, [messages])
 
-    const listenMessageDelete = useCallback((status, data) => {
-        console.log(data);
+    const listenMessageUpdate = useCallback((status, data) => {
+        if (status && data) setMessages(msgs => msgs.map(msg => msg._id === data._id ? data : msg))
+        else toast.ERROR(data.message)
+    }, [messages])
 
+    const listenMessageDelete = useCallback((status, data) => {
         if (status && data) setMessages(msgs => msgs.filter(m => m._id !== data))
         else toast.ERROR(data.message)
     }, [messages])
@@ -25,6 +28,11 @@ const Messages = () => {
         listenMessageCreate && socket.on(`${TYPES.MESSAGE}_${METHODS.CREATE}`, listenMessageCreate)
         return () => socket.removeListener(`${TYPES.MESSAGE}_${METHODS.CREATE}`, listenMessageCreate)
     }, [listenMessageCreate])
+
+    useEffect(() => {
+        listenMessageUpdate && socket.on(`${TYPES.MESSAGE}_${METHODS.UPDATE}`, listenMessageUpdate)
+        return () => socket.removeListener(`${TYPES.MESSAGE}_${METHODS.UPDATE}`, listenMessageUpdate)
+    }, [listenMessageUpdate])
 
     useEffect(() => {
         listenMessageDelete && socket.on(`${TYPES.MESSAGE}_${METHODS.DELETE}`, listenMessageDelete)

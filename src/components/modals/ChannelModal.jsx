@@ -44,13 +44,13 @@ const ChannelModal = (props) => {
     setSelectedID(-1)
   }
 
-  useEffect(() => {
-    if (selectedID >= 0) {
-      const curChannel = channels[selectedID]
-      setChannel(curChannel)
-      console.log(curChannel);
-    }
-  }, [selectedID])
+  // useEffect(() => {
+  //   if (selectedID >= 0) {
+  //     const curChannel = channels[selectedID]
+  //     setChannel(curChannel)
+  //     console.log(curChannel);
+  //   }
+  // }, [selectedID])
 
   useEffect(() => {
     if (user._id) {
