@@ -7,7 +7,7 @@ import { SocketContext } from "../../providers/SocketProvider"
 
 const DMModal = (props) => {
   const { isChannel, selectedID, setSelectedID, modalStatus, setModalStatus } = props
-  const { users, socket, channels, setChannels } = useContext(SocketContext)
+  const { users, socket, channels } = useContext(SocketContext)
   const { user } = useContext(AuthContext)
   const initState = { name: "", creator: "", members: [], isChannel };
   const [channel, setChannel] = useState(initState)
@@ -48,7 +48,7 @@ const DMModal = (props) => {
       const curChannel = channels[selectedID]
       setChannel(curChannel)
     }
-  }, [selectedID])
+  }, [selectedID, setChannel, channels])
 
   useEffect(() => {
     if (user._id) {

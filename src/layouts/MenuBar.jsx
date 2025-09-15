@@ -1,4 +1,4 @@
-import { HStack, VStack, Text } from "@chakra-ui/react"
+import { VStack } from "@chakra-ui/react"
 import ChannelList from "../components/main/ChannelList"
 import DMList from "../components/main/DMList"
 

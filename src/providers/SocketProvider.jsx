@@ -1,4 +1,4 @@
-import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
+import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 import { io } from "socket.io-client";
 import { METHODS, TYPES } from "../constants/chat";
@@ -32,7 +32,7 @@ const SocketProvider = ({ children }) => {
   const { channel, message } = useParams()
   const [showThread, setShowThread] = useState(false)
 
-  const socket = useMemo(() => io(`${process.env.REACT_APP_BASE_URL}`, { extraHeaders: { token } }), [user._id]);
+  const socket = useMemo(() => io(`${process.env.REACT_APP_BASE_URL}`, { extraHeaders: { token } }), [JSON.stringify(user._id)]);
 
   socket.on('connect', () => {
     setIsConnected(true);

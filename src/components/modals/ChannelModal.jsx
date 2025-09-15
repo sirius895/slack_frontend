@@ -33,7 +33,7 @@ const ChannelModal = (props) => {
       setChannel(curChannel)
       console.log(curChannel);
     }
-  }, [selectedID])
+  }, [selectedID, setChannel])
 
   const handleCreate = () => {
     console.log(channel);

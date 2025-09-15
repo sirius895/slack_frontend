@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom"
 
 const SideBar = () => {
     const navigate = useNavigate();
-    const [activatedItem, setActivatedItem] = useState("HOME");
+    const [setActivatedItem] = useState("HOME");
     const pageNavigate = (url, key) => {
         console.log("hell;");
 

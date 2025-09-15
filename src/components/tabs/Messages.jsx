@@ -13,34 +13,34 @@ const Messages = () => {
     const { channel } = useParams()
 
     const listenMessageCreate = useCallback((status, data) => {
-        if (status && data) setMessages([...messages, data])
+        if (status && data && data.channelID === channel) setMessages([...messages, data])
         else toast.ERROR(data.message)
-    }, [messages])
+    }, [messages, setMessages])
 
     const listenMessageUpdate = useCallback((status, data) => {
         if (status && data) setMessages(msgs => msgs.map(msg => msg._id === data._id ? data : msg))
         else toast.ERROR(data.message)
-    }, [messages])
+    }, [setMessages])
 
     const listenMessageDelete = useCallback((status, data) => {
         if (status && data) setMessages(msgs => msgs.filter(m => m._id !== data))
         else toast.ERROR(data.message)
-    }, [messages])
+    }, [setMessages])
 
     useEffect(() => {
         listenMessageCreate && socket.on(`${TYPES.MESSAGE}_${METHODS.CREATE}`, listenMessageCreate)
         return () => socket.removeListener(`${TYPES.MESSAGE}_${METHODS.CREATE}`, listenMessageCreate)
-    }, [listenMessageCreate])
+    }, [listenMessageCreate, messages])
 
     useEffect(() => {
         listenMessageUpdate && socket.on(`${TYPES.MESSAGE}_${METHODS.UPDATE}`, listenMessageUpdate)
         return () => socket.removeListener(`${TYPES.MESSAGE}_${METHODS.UPDATE}`, listenMessageUpdate)
-    }, [listenMessageUpdate])
+    }, [listenMessageUpdate, socket])
 
     useEffect(() => {
         listenMessageDelete && socket.on(`${TYPES.MESSAGE}_${METHODS.DELETE}`, listenMessageDelete)
         return () => socket.removeListener(`${TYPES.MESSAGE}_${METHODS.DELETE}`, listenMessageDelete)
-    }, [listenMessageDelete])
+    }, [listenMessageDelete, socket])
 
     useEffect(() => {
         const messageH = messageRef?.current?.getClientRects()[0].height;

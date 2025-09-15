@@ -1,4 +1,4 @@
-import { Avatar, VStack, HStack, Text } from "@chakra-ui/react"
+import { Avatar, HStack } from "@chakra-ui/react";
 
 const UserAvatar = (props) => {
     const { url: _url, w = "56px", h = "56px", ...etcProps } = props

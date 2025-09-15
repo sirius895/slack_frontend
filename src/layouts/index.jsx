@@ -1,4 +1,4 @@
-import { Box, Flex, HStack, VStack } from "@chakra-ui/react"
+import { Flex, HStack, VStack } from "@chakra-ui/react"
 import { Outlet } from "react-router-dom"
 import Header from "./Header"
 import MenuBar from "./MenuBar"

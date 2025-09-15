@@ -20,7 +20,7 @@ const ChannelList = () => {
     const listenCreate = useCallback((status, data) => {
         if (status && data) setChannels([...channels, data])
         else toast.ERROR(data.message)
-    }, [channels])
+    }, [channels, setChannels])
 
     const listenUpdate = useCallback((status, data) => {
         if (status && data) {
@@ -28,17 +28,17 @@ const ChannelList = () => {
             socket.emit(`${TYPES.CHANNEL}_${METHODS.READ_BY_USER_ID}`, user._id)
         }
         else toast.ERROR(data.message)
-    }, [channels])
+    }, [socket, user._id])
 
     const listenDelete = useCallback((status, data) => {
         if (status && data) setChannels(channels => channels.filter((c) => c._id !== data._id))
         else toast.ERROR(data.message)
-    }, [channels])
+    }, [setChannels])
 
     useEffect(() => {
         socket.on(`${TYPES.CHANNEL}_${METHODS.CREATE}`, listenCreate)
         return () => socket.removeListener(`${TYPES.CHANNEL}_${METHODS.CREATE}`, listenCreate)
-    }, [listenCreate])
+    }, [listenCreate, socket])
 
     useEffect(() => {
         socket.on(`${TYPES.CHANNEL}_${METHODS.UPDATE}`, listenUpdate)
