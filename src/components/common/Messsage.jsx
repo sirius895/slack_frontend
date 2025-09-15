@@ -1,5 +1,5 @@
 import { HStack, Text, VStack } from "@chakra-ui/react"
-import { useContext, useState } from "react"
+import { useContext, useState, useMemo } from "react"
 import { AiFillPushpin } from "react-icons/ai"
 import { FaCommentDots, FaRegSmile, FaTrash } from "react-icons/fa"
 import { METHODS, TYPES } from "../../constants/chat"
@@ -32,20 +32,40 @@ const Message = (props) => {
         socket.emit(`${TYPES.MESSAGE}_${METHODS.UPDATE}`, { _id: message._id, pinnedBy })
     }
 
+    const emoticons = useMemo(() => {
+        return message.emoticons.reduce((prev, emoticon) => {
+            const group = prev.some(prev => prev.code == emoticon.code);
+            if (!group) { return [...prev, { code: emoticon.code, users: [emoticon.sender] }]; }
+            return prev.map(group => {
+                if (group.code == emoticon.code) {
+                    return {
+                        code: emoticon.code,
+                        users: [...group.users, emoticon.sender],
+                    }
+                }
+                return group;
+            });
+        }, []);
+    }, [message]);
+
     return (
         <HStack w={"full"} minH={"80px"} pos={"relative"} h={"fit-content"} py={4} pr={6} onMouseOver={() => setToolShow(true)} onMouseLeave={() => setToolShow(false)}>
             <VStack w={"72px"} h={"full"} justify={'center'} alignItems={"center"}>
                 <UserAvatar />
-                <Text>
-                    {message.sender.username ? message.sender.username : "Unknown"}
-                </Text>
+                <Text>{message.sender.username ? message.sender.username : "Unknown"}</Text>
             </VStack>
             <VStack flexGrow={1} h={"full"} pl={2} pt={2} justifyContent={"flex-start"}>
                 <HStack w={"full"} flex={"1 1 0"} alignItems={"flex-start"}>
                     <Text w={"full"} whiteSpace={"normal"} flexWrap={"wrap"}>{message.content}</Text>
                 </HStack>
-                <HStack w={"full"} >
-                    {message.emoticons.map((emo, i) => <Emoticon key={i} id={emo.code} onClick={() => handleEmos(emo.code)} />)}
+                <HStack w={"full"} gap={2}>
+                    {emoticons.map((emo, i) => (
+                        <HStack key={i}>
+                            <Emoticon key={i} id={emo.code} onClick={() => handleEmos(emo.code)} />
+                            <Text>{emo.users.length}</Text>
+                        </HStack>)
+                    )}
+                    {/* {message.emoticons.map((emo, i) => (<Emoticon key={i} id={emo.code} onClick={() => handleEmos(emo.code)} />))} */}
                 </HStack>
             </VStack>
             <VStack h={"full"} justify={"center"}>

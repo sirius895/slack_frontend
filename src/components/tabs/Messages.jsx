@@ -48,6 +48,7 @@ const Messages = () => {
         if (parentH <= messageH) messageRef.current.parentElement.scrollBy(0, messageH - parentH)
     }, [messages.length])
 
+
     return (
         <HStack w={"full"} h={"full"}>
             <VStack flex={"1 1 0"} h={"full"} p={4}>

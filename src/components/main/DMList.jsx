@@ -65,7 +65,7 @@ const DMList = () => {
                             justify={"space-between"} onClick={() => { setCurChannel(channel); navigate(`/chatting/home/${channel._id}/@`) }}>
                             <HStack gap={2}>
                                 <Avatar w={"24px"} h={"24px"} />
-                                <Text>{users.find(u => u._id === channel.creator).username}</Text>
+                                <Text>{users.find(u => u._id === channel.members.find(m => m !== user._id)).username}</Text>
                             </HStack>
                             <HStack gap={2}>
                                 {channel.creator === user._id && <FaEdit onClick={() => { setSelectedID(i); setModalStatus("edit") }} />}

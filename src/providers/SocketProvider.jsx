@@ -32,7 +32,7 @@ const SocketProvider = ({ children }) => {
   const { channel, message } = useParams()
   const [showThread, setShowThread] = useState(false)
 
-  const socket = useMemo(() => io(`${process.env.REACT_APP_BASE_URL}`, { extraHeaders: { token } }), [JSON.stringify(user._id)]);
+  const socket = useMemo(() => io(`${process.env.REACT_APP_BASE_URL}`, { extraHeaders: { token: localStorage.getItem("token") } }), [localStorage.getItem("token")]);
 
   socket.on('connect', () => {
     setIsConnected(true);
@@ -74,6 +74,12 @@ const SocketProvider = ({ children }) => {
       socket.removeListener(`${TYPES.CHANNEL}_${METHODS.READ_BY_USER_ID}`, listenChannelReadByUserID)
     }
   }, [user._id])
+
+  useEffect(() => {
+    socket.on(TYPES.AUTH, (status, data) => {
+      if (!status) toast.ERROR(data.message)
+    })
+  }, [])
 
   useEffect(() => {
     if (channel.length > 1) {
