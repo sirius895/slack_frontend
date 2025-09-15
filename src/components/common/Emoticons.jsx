@@ -6,7 +6,7 @@ const Emoticons = (props) => {
     const { handleEmos, ...etcProps } = props
 
     return (
-        <HStack flexWrap={"wrap"} w={"300px"} rounded={4} bg={"white"} shadow={"0 0 3px black"} p={4} {...etcProps}>
+        <HStack flexWrap={"wrap"} w={"300px"} rounded={4} bg={"white"} shadow={"0 0 3px black"} p={2} {...etcProps}>
             {emoticons.map(emoticon => (
                 <Emoticon
                     key={emoticon.id}

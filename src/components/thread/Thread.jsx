@@ -1,15 +1,17 @@
-import { HStack, VStack } from "@chakra-ui/react"
+import { HStack, Text, VStack } from "@chakra-ui/react"
 import { useCallback, useContext, useEffect, useRef } from "react"
+import { FaTimes } from "react-icons/fa"
+import { useParams } from "react-router-dom"
 import { METHODS, TYPES } from "../../constants/chat"
 import { SocketContext } from "../../providers/SocketProvider"
 import toast from "../../utils/toast"
 import MessageEditor from "../common/MessageEditor"
-import Message from "../common/Messsage"
 
-const Messages = () => {
-    const { socket, messages, setMessages } = useContext(SocketContext)
+const Thread = () => {
+    const { showThread, setShowThread, socket, messages, setMessages } = useContext(SocketContext)
+    const { message } = useParams()
     const messageRef = useRef(null)
-    
+
     const listenMessageCreate = useCallback((status, data) => {
         if (status && data) setMessages([...messages, data])
         else toast.ERROR(data.message)
@@ -41,31 +43,29 @@ const Messages = () => {
     }, [listenMessageDelete])
 
     useEffect(() => {
+        if (message.length > 1) socket.emit(`${TYPES.MESSAGE}_${METHODS.READ_BY_PARENT_ID}`, message)
+    }, [message])
+
+    useEffect(() => {
         const messageH = messageRef?.current?.getClientRects()[0].height;
         const parentH = messageRef?.current?.parentElement.getClientRects()[0].height;
         if (parentH <= messageH) messageRef.current.parentElement.scrollBy(0, messageH - parentH)
     }, [messages])
-
     return (
-        <HStack w={"full"} h={"full"}>
-            <VStack flex={"1 1 0"} h={"full"} p={4}>
-                <VStack w={"full"} flex={"1 1 0"} overflowY={"auto"} scrollBehavior={"smooth"} gap={4}>
-                    <VStack w={"full"} ref={messageRef}>
-                        {
-                            messages.length && messages.map((m, i) => {
-                                return (
-                                    <Message key={i} message={m} />
-                                )
-                            })
-                        }
-                    </VStack>
-                </VStack>
-                <VStack w={"full"} h={"180px"}>
-                    <MessageEditor isForThread={false} />
-                </VStack>
+        <VStack w={"300px"} h={"full"} bg={"white"} shadow={"0 0 4px black"} roundedRight={"8px"}>
+            <VStack w={"full"} h={"100px"} px={4} pt={4}>
+                <HStack w={"full"} h={"full"} justify={"space-between"} align={"flex-start"}>
+                    <Text fontWeight={"extrabold"} fontSize={"20px"}>
+                        Thread
+                    </Text>
+                    <FaTimes cursor={"pointer"} onClick={() => setShowThread(false)} />
+                </HStack>
             </VStack>
-        </HStack>
+            <VStack w={"full"} h={"180px"} px={4}>
+                <MessageEditor />
+            </VStack>
+        </VStack>
     )
 }
 
-export default Messages
+export default Thread

@@ -16,7 +16,9 @@ export const SocketContext = createContext({
   curChannel: {},
   setCurChannel: () => { },
   messages: [],
-  setMessages: () => { }
+  setMessages: () => { },
+  showThread: false,
+  setShowThread: () => { }
 });
 
 const SocketProvider = ({ children }) => {
@@ -28,6 +30,7 @@ const SocketProvider = ({ children }) => {
   const [isConnected, setIsConnected] = useState(false);
   const { user } = useContext(AuthContext)
   const { channel, message } = useParams()
+  const [showThread, setShowThread] = useState(false)
 
   const socket = useMemo(() => io(`${process.env.REACT_APP_BASE_URL}`, { extraHeaders: { token } }), [user._id]);
 
@@ -75,7 +78,7 @@ const SocketProvider = ({ children }) => {
   }, [user._id])
 
   useEffect(() => {
-    if (channel.length > 0) {
+    if (channel.length > 1) {
       socket.emit(`${TYPES.MESSAGE}_${METHODS.READ_BY_CHANNEL_ID}`, channel)
       socket.on(`${TYPES.MESSAGE}_${METHODS.READ_BY_CHANNEL_ID}`, listenMessageReadByChannelID)
     }
@@ -91,7 +94,8 @@ const SocketProvider = ({ children }) => {
         users, setUsers,
         channels, setChannels,
         curChannel, setCurChannel,
-        messages, setMessages
+        messages, setMessages,
+        showThread, setShowThread
       }}
     >
       {children}

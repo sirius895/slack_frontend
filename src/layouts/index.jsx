@@ -11,7 +11,7 @@ const Layout = () => {
             <HStack w={"full"} flexGrow={1} gap={0} style={{ margin: 0 }} bg={"var(--mainColor)"} pr={2}>
                 <SideBar />
                 <MenuBar />
-                <Flex h={"full"} flex={"1 1 0"}>
+                <Flex h={"full"} flex={"1 1 0"} overflowX={"auto"}>
                     <Outlet />
                 </Flex>
             </HStack>

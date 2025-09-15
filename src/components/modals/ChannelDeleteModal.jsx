@@ -1,13 +1,11 @@
 import { Button, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Text } from "@chakra-ui/react"
 import { useContext } from "react"
 import { METHODS, TYPES } from "../../constants/chat"
-import { AuthContext } from "../../providers/AuthProvider"
 import { SocketContext } from "../../providers/SocketProvider"
 
 const ChannelDeleteModal = (props) => {
     const { modalStatus, setModalStatus, selectedID, setSelectedID } = props
-    const { users, socket, channels, setChannels } = useContext(SocketContext)
-    const { user } = useContext(AuthContext)
+    const { socket, channels } = useContext(SocketContext)
 
     const handleCancel = () => {
         setModalStatus("init")
@@ -15,7 +13,6 @@ const ChannelDeleteModal = (props) => {
     }
 
     const handleDelete = () => {
-        console.log(channels[selectedID])
         socket.emit(`${TYPES.CHANNEL}_${METHODS.DELETE}`, channels[selectedID]._id)
         handleCancel()
     }

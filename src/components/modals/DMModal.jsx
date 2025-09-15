@@ -28,7 +28,6 @@ const DMModal = (props) => {
   }
 
   const handleCreate = () => {
-    console.log(channel);
     socket.emit(`${TYPES.CHANNEL}_${METHODS.CREATE}`, { ...channel, creator: user._id, members: [...channel.members, user._id] })
     handleCancel()
   }
@@ -48,7 +47,6 @@ const DMModal = (props) => {
     if (selectedID >= 0) {
       const curChannel = channels[selectedID]
       setChannel(curChannel)
-      console.log(curChannel);
     }
   }, [selectedID])
 

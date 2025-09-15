@@ -8,7 +8,7 @@ import { SocketContext } from "../../providers/SocketProvider"
 import Emoticon from "./Emoticon"
 import Emoticons from "./Emoticons"
 
-const MessageEditor = () => {
+const MessageEditor = ({ isForThread }) => {
     const { user } = useContext(AuthContext)
     const { socket } = useContext(SocketContext)
     const { channel: channelID, message: messageID } = useParams()
@@ -17,10 +17,11 @@ const MessageEditor = () => {
     const initState = {
         sender: "", channelID, mentios: [],
         content: "", files: [], emoticons: [],
-        pinnedBy: [], isDraft: false, parentID: null, childCount: 0
+        pinnedBy: [], isDraft: false, parentID: /* isForThread ? messageID : */ null, childCount: 0
     }
     const [message, setMessage] = useState(initState);
     const changeContent = (e) => setMessage({ ...message, content: e.target.value });
+
     const createMessage = () => {
         socket.emit(`${TYPES.MESSAGE}_${METHODS.CREATE}`, { ...message })
     }
@@ -45,9 +46,11 @@ const MessageEditor = () => {
     const removeEmos = (no) => {
         setMessage(msg => ({ ...msg, emoticons: msg.emoticons.filter((m, i) => i !== no) }))
     }
+
     useEffect(() => {
         if (user._id) setMessage(m => ({ ...m, sender: user._id }))
     }, [user._id])
+
     useEffect(() => {
         if (channelID.length > 0) setMessage(m => ({ ...m, channelID }))
     }, [channelID])
@@ -73,7 +76,7 @@ const MessageEditor = () => {
                     <FaPlus />
                     <HStack pos={"relative"} onMouseLeave={() => setEmoShow(false)}>
                         <FaRegSmile onClick={() => setEmoShow(!emoShow)} />
-                        {emoShow && <Emoticons maxW={"250px"} pos={"absolute"} bottom={"100%"} left={0} handleEmos={handleEmos} />}
+                        {emoShow && <Emoticons maxW={"200px"} pos={"absolute"} bottom={"100%"} left={0} handleEmos={handleEmos} />}
                     </HStack>
                 </HStack>
                 <HStack>

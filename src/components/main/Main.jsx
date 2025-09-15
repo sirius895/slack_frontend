@@ -1,19 +1,25 @@
-import { VStack } from "@chakra-ui/react"
-import { useState } from "react"
+import { HStack, VStack } from "@chakra-ui/react"
+import { useContext, useState } from "react"
 import Files from "../tabs/Files"
 import Messages from "../tabs/Messages"
 import Pins from "../tabs/Pins"
 import TabList from "../tabs/TabList"
+import Thread from "../thread/Thread"
+import { SocketContext } from "../../providers/SocketProvider"
 
 const Main = () => {
+    const { showThread } = useContext(SocketContext)
     const [curTab, setCurTab] = useState("messages")
     return (
-        <VStack w={"full"} h={"full"} bg={"white"} roundedRight={"8px"}>
-            <TabList curTab={curTab} setCurTab={setCurTab} />
-            {curTab === "messages" && <Messages />}
-            {curTab === "pins" && <Pins />}
-            {curTab === "files" && <Files />}
-        </VStack >
+        <HStack w={"full"} h={"full"} roundedRight={"8px"}>
+            <VStack flex={"1 1 0"} h={"full"} bg={"white"}>
+                <TabList curTab={curTab} setCurTab={setCurTab} />
+                {curTab === "messages" && <Messages />}
+                {curTab === "pins" && <Pins />}
+                {curTab === "files" && <Files />}
+            </VStack >
+            {showThread && <Thread />}
+        </HStack>
     )
 }
 

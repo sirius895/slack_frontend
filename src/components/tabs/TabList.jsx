@@ -10,11 +10,11 @@ const TabList = (props) => {
 
     useEffect(() => {
         setCurChannel(channels.find(c => c._id === channel))
-    }, [channels])
+    }, [channel])
     const { curTab, setCurTab } = props
 
     return (
-        <VStack w={"full"} h={"100px"} px={4} pt={4} shadow={"0 0 3px black"}>
+        <VStack w={"full"} h={"100px"} px={4} pt={4} shadow={"0 0 4px black"}>
             <HStack w={"full"}>
                 <Text fontSize={"20px"} fontWeight={"extrabold"}># {curChannel?.name}</Text>
             </HStack>

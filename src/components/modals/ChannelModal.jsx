@@ -6,8 +6,8 @@ import { AuthContext } from "../../providers/AuthProvider"
 import { SocketContext } from "../../providers/SocketProvider"
 
 const ChannelModal = (props) => {
-  const { isChannel, selectedID, setSelectedID, modalStatus, setModalStatus } = props
-  const { users, socket, channels, setChannels } = useContext(SocketContext)
+  const { isChannel, setSelectedID, modalStatus, setModalStatus } = props
+  const { users, socket } = useContext(SocketContext)
   const { user } = useContext(AuthContext)
   const initState = { name: "", creator: "", members: [], isChannel };
   const [channel, setChannel] = useState(initState)
@@ -43,14 +43,6 @@ const ChannelModal = (props) => {
     setChannel(initState)
     setSelectedID(-1)
   }
-
-  // useEffect(() => {
-  //   if (selectedID >= 0) {
-  //     const curChannel = channels[selectedID]
-  //     setChannel(curChannel)
-  //     console.log(curChannel);
-  //   }
-  // }, [selectedID])
 
   useEffect(() => {
     if (user._id) {

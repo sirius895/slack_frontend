@@ -1,21 +1,25 @@
 import { HStack, Text, VStack } from "@chakra-ui/react"
 import { useContext, useState } from "react"
-import { FaRegSmile, FaTrash } from "react-icons/fa"
+import { AiFillPushpin } from "react-icons/ai"
+import { FaCommentDots, FaRegSmile, FaTrash } from "react-icons/fa"
 import { METHODS, TYPES } from "../../constants/chat"
 import { AuthContext } from "../../providers/AuthProvider"
 import { SocketContext } from "../../providers/SocketProvider"
-import UserAvatar from "./UserAvatar"
 import Emoticon from "./Emoticon"
 import Emoticons from "./Emoticons"
+import UserAvatar from "./UserAvatar"
+import { useNavigate, useParams } from "react-router-dom"
 
 const Message = (props) => {
     const { message } = props
     const { user } = useContext(AuthContext)
-    const { socket } = useContext(SocketContext)
+    const { socket, setShowThread } = useContext(SocketContext)
     const [toolShow, setToolShow] = useState(false)
     const [emoShow, setEmoShow] = useState(false)
+    const navigate = useNavigate()
+    const { channel } = useParams()
 
-    const deleteMessage = (_id) => {
+    const handleDelete = (_id) => {
         socket.emit(`${TYPES.MESSAGE}_${METHODS.DELETE}`, _id)
     }
 
@@ -23,8 +27,13 @@ const Message = (props) => {
         socket.emit(`${TYPES.MESSAGE}_${METHODS.HANDLE_EMOS}`, { messageID: message._id, code })
     }
 
+    const handlePin = () => {
+        const pinnedBy = message.pinnedBy.includes(user._id) ? message.pinnedBy.filter(m => m._id) : [...message.pinnedBy, user._id]
+        socket.emit(`${TYPES.MESSAGE}_${METHODS.UPDATE}`, { _id: message._id, pinnedBy })
+    }
+
     return (
-        <HStack w={"full"} minH={"80px"} pos={"relative"} h={"fit-content"} py={4} onMouseOver={() => setToolShow(true)} onMouseLeave={() => setToolShow(false)}>
+        <HStack w={"full"} minH={"80px"} pos={"relative"} h={"fit-content"} py={4} pr={6} onMouseOver={() => setToolShow(true)} onMouseLeave={() => setToolShow(false)}>
             <VStack w={"72px"} h={"full"} justify={'center'} alignItems={"center"}>
                 <UserAvatar />
                 <Text>
@@ -36,22 +45,21 @@ const Message = (props) => {
                     <Text w={"full"} whiteSpace={"normal"} flexWrap={"wrap"}>{message.content}</Text>
                 </HStack>
                 <HStack w={"full"} >
-                    {message.emoticons.map((emo, i) => {
-                        return (
-                            <Emoticon key={i} id={emo.code} onClick={() => handleEmos(emo.code)} />
-                        )
-                    })}
+                    {message.emoticons.map((emo, i) => <Emoticon key={i} id={emo.code} onClick={() => handleEmos(emo.code)} />)}
                 </HStack>
             </VStack>
+            <VStack h={"full"} justify={"center"}>
+                {message?.pinnedBy?.includes(user._id) && <AiFillPushpin size={"24px"} />}
+            </VStack>
             {toolShow &&
-                <HStack pos={"absolute"} shadow={"0 0 3px black"} rounded={4} px={4} py={2} gap={2} top={4} right={4}>
-                    <HStack gap={2} cursor={"pointer"}>
-                        <HStack pos={"relative"} onMouseLeave={() => setEmoShow(false)}>
-                            <FaRegSmile onClick={() => setEmoShow(!emoShow)} />
-                            {emoShow && <Emoticons maxW={"250px"} pos={"absolute"} top={"100%"} right={0} handleEmos={handleEmos} />}
-                        </HStack>
+                <HStack pos={"absolute"} shadow={"0 0 3px black"} bg={"white"} rounded={4} px={4} py={2} gap={2} top={4} right={4}>
+                    <HStack gap={2} cursor={"pointer"} pos={"relative"} onMouseLeave={() => setEmoShow(false)}>
+                        <FaRegSmile onClick={() => setEmoShow(!emoShow)} />
+                        {emoShow && <Emoticons maxW={"250px"} pos={"absolute"} top={"100%"} right={0} handleEmos={handleEmos} />}
+                        <AiFillPushpin onClick={handlePin} />
+                        <FaCommentDots onClick={() => { setShowThread(true); navigate(`/chatting/home/${channel}/${message._id}`) }} />
+                        {message.sender._id === user._id && <FaTrash onClick={() => handleDelete(message._id)} />}
                     </HStack>
-                    {message.sender._id === user._id && <FaTrash onClick={() => deleteMessage(message._id)} />}
                 </HStack>}
         </HStack>
     )
