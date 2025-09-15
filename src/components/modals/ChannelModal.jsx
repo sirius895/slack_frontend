@@ -6,8 +6,8 @@ import { AuthContext } from "../../providers/AuthProvider"
 import { SocketContext } from "../../providers/SocketProvider"
 
 const ChannelModal = (props) => {
-  const { isChannel, setSelectedID, modalStatus, setModalStatus } = props
-  const { users, socket } = useContext(SocketContext)
+  const { isChannel, selectedID, setSelectedID, modalStatus, setModalStatus } = props
+  const { users, socket, channels } = useContext(SocketContext)
   const { user } = useContext(AuthContext)
   const initState = { name: "", creator: "", members: [], isChannel };
   const [channel, setChannel] = useState(initState)
@@ -27,10 +27,18 @@ const ChannelModal = (props) => {
     })
   }
 
+  useEffect(() => {
+    if (selectedID >= 0) {
+      const curChannel = channels[selectedID]
+      setChannel(curChannel)
+      console.log(curChannel);
+    }
+  }, [selectedID])
+
   const handleCreate = () => {
     console.log(channel);
     socket.emit(`${TYPES.CHANNEL}_${METHODS.CREATE}`, { ...channel, creator: user._id, members: [...channel.members, user._id] })
-    handleCancel()
+    // handleCancel()
   }
 
   const handleUpdate = () => {
@@ -44,11 +52,11 @@ const ChannelModal = (props) => {
     setSelectedID(-1)
   }
 
-  useEffect(() => {
-    if (user._id) {
-      setChannel({ ...channel, creator: user._id, members: [user._id] })
-    }
-  }, [user._id])
+  // useEffect(() => {
+  //   if (user._id) {
+  //     setChannel({ ...channel, creator: user._id, members: [user._id] })
+  //   }
+  // }, [user._id])
 
   useEffect(() => {
     if (users.length) setTmp(users)

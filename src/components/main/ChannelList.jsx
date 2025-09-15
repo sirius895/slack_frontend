@@ -23,7 +23,10 @@ const ChannelList = () => {
     }, [channels])
 
     const listenUpdate = useCallback((status, data) => {
-        if (status && data) setChannels(channels => channels.map((c) => c._id === data._id ? data : c))
+        if (status && data) {
+            // setChannels(channels => channels.map((c) => c._id === data._id ? data : c))
+            socket.emit(`${TYPES.CHANNEL}_${METHODS.READ_BY_USER_ID}`, user._id)
+        }
         else toast.ERROR(data.message)
     }, [channels])
 
@@ -58,7 +61,7 @@ const ChannelList = () => {
             <VStack w={"full"} pl={2} py={2}>
                 {showCh && channels.map((channel, i) => {
                     return (
-                        channel.isChannel &&
+                        channel.isChannel && channel.members.includes(user._id) &&
                         <HStack key={i} w={'full'} gap={4}
                             rounded={8} px={2} py={1} _hover={{ backgroundColor: "var(--fontColor)" }}
                             cursor={"pointer"} justify={"space-between"} onClick={() => { setCurChannel(channel); navigate(`/chatting/home/${channel._id}/@`); }}>

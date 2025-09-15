@@ -66,7 +66,6 @@ const SocketProvider = ({ children }) => {
 
   useEffect(() => {
     if (user._id) {
-      console.log(user);
       socket.emit(TYPES.AUTH, token);
       socket.emit(`${TYPES.CHANNEL}_${METHODS.READ_BY_USER_ID}`, user._id)
       socket.on(`${TYPES.CHANNEL}_${METHODS.READ_BY_USER_ID}`, listenChannelReadByUserID);
