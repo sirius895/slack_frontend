@@ -1,5 +1,5 @@
 import { HStack, Text, Textarea, VStack } from "@chakra-ui/react"
-import { useContext, useEffect, useState, useRef } from "react"
+import { useContext, useEffect, useRef, useState } from "react"
 import { FaBold, FaItalic, FaPaperPlane, FaPlus, FaRegSmile } from "react-icons/fa"
 import { useParams } from "react-router-dom"
 import { METHODS, TYPES } from "../../constants/chat"

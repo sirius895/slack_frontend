@@ -4,12 +4,12 @@ import { tokenVerify } from "../api/auth";
 import { authRouter, whiteList } from "../constants/urls";
 
 export const AuthContext = createContext({
-    user: { _id: "", username: "", email: "", avatar: "" },
+    user: { _id: "", username: "", email: "", avatar: "", state: 0 },
     setUser: () => { }
 })
 
 const AuthProvider = (props) => {
-    const [user, setUser] = useState({ _id: "", username: "", email: "", avatar: "" });
+    const [user, setUser] = useState({ _id: "", username: "", email: "", avatar: "", state: 0 });
     const value = { user, setUser };
     const href = window.location.pathname;
 

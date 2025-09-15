@@ -36,9 +36,8 @@ const ChannelModal = (props) => {
   }, [selectedID, setChannel])
 
   const handleCreate = () => {
-    console.log(channel);
     socket.emit(`${TYPES.CHANNEL}_${METHODS.CREATE}`, { ...channel, creator: user._id, members: [...channel.members, user._id] })
-    // handleCancel()
+    handleCancel()
   }
 
   const handleUpdate = () => {
