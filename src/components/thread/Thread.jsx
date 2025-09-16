@@ -7,9 +7,11 @@ import { SocketContext } from "../../providers/SocketProvider"
 import toast from "../../utils/toast"
 import MessageEditor from "../common/MessageEditor"
 import Message from "../common/Messsage"
+import { AuthContext } from "../../providers/AuthProvider"
 
 const Thread = () => {
     const { setShowThread, socket } = useContext(SocketContext)
+    const { user } = useContext(AuthContext)
     const [messages, setMessages] = useState([])
     const { message } = useParams()
     const messageRef = useRef(null)
@@ -20,7 +22,6 @@ const Thread = () => {
     }
 
     const listenMessageCreate = useCallback((status, data) => {
-        console.log(data);
         if (status && data) setMessages([...messages, data])
         else toast.ERROR(data.message)
     }, [messages])
@@ -36,8 +37,6 @@ const Thread = () => {
     }, [messages])
 
     useEffect(() => {
-        console.log("here");
-
         listenMessageCreate && socket.on(`${TYPES.MESSAGE}_${METHODS.READ_BY_PARENT_ID}`, listenMessageReadByParentID)
         return () => socket.removeListener(`${TYPES.MESSAGE}_${METHODS.READ_BY_CHANNEL_ID}`, listenMessageReadByParentID)
     }, [message])
@@ -80,11 +79,11 @@ const Thread = () => {
             </VStack>
             <VStack w={"full"} flex={"1 1 0"} overflowY={"auto"} py={4}>
                 <VStack w={"full"} px={4} flex={"1 1 0"} scrollBehavior={"smooth"} gap={4}>
-                    <VStack w={"full"} ref={messageRef}>
-                        {messages.length && messages.map((m, i) => <Message key={i} message={m} />)}
+                    <VStack w={"full"} ref={messageRef} gap={8}>
+                        {messages.length && messages.map((m, i) => <HStack w={"full"} key={i} justify={m.sender._id !== user._id && "flex-end"}><Message message={m} w={"80%"} maxW={"300px"} /></HStack>)}
                     </VStack>
                 </VStack>
-                <VStack w={"full"} minH={"180px"} pos={"sticky"} max={"180px"} px={4}>
+                <VStack w={"full"} h={"180px"} max={"180px"} px={4}>
                     <MessageEditor isForThread={true} />
                 </VStack>
             </VStack>

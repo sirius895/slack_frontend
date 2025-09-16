@@ -54,12 +54,12 @@ const Messages = () => {
     return (
         <HStack w={"full"} h={"full"}>
             <VStack flex={"1 1 0"} h={"full"} p={4}>
-                <VStack w={"full"} flex={"1 1 0"} px={2} py={4} overflowY={"auto"} scrollBehavior={"smooth"} gap={4}>
+                <VStack w={"full"} flex={"1 1 0"} px={2} pt={4} overflowY={"auto"} scrollBehavior={"smooth"} gap={4}>
                     <VStack w={"full"} gap={8} ref={messageRef}>
-                        {messages.length && messages.map((m, i) => m.channelID === channel && !m.parentID && <HStack w={"full"} key={i} justify={m.sender._id !== user._id && "flex-end"}><Message message={m} /></HStack>)}
+                        {messages.length && messages.map((m, i) => m.channelID === channel && !m.parentID && <HStack w={"full"} key={i} justify={m.sender._id !== user._id && "flex-end"}><Message message={m} w={"60%"} maxW={"600px"} /></HStack>)}
                     </VStack>
                 </VStack>
-                <VStack w={"full"} h={"180px"}>
+                <VStack w={"full"} h={"180px"} maxH={"180px"}>
                     <MessageEditor isForThread={false} />
                 </VStack>
             </VStack>

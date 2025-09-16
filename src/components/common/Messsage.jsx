@@ -6,13 +6,13 @@ import { useNavigate, useParams } from "react-router-dom"
 import { METHODS, TYPES } from "../../constants/chat"
 import { AuthContext } from "../../providers/AuthProvider"
 import { SocketContext } from "../../providers/SocketProvider"
+import { formatTime } from "../../utils/time"
 import Emoticon from "./Emoticon"
 import Emoticons from "./Emoticons"
 import UserAvatar from "./UserAvatar"
-import { formatTime } from "../../utils/time"
 
 const Message = (props) => {
-    const { message } = props
+    const { message, ...etcProps } = props
     const { user } = useContext(AuthContext)
     const { socket, setShowThread } = useContext(SocketContext)
     const [toolShow, setToolShow] = useState(false)
@@ -50,7 +50,7 @@ const Message = (props) => {
     }, [message]);
 
     return (
-        <HStack w={"60%"} maxW={"600px"} minH={"80px"} bg={"#e1dfdf8a"} rounded={"12px"} shadow={"0 0 4px"} px={4} pos={"relative"} h={"fit-content"} gap={4} py={4} pr={6} onMouseOver={() => setToolShow(true)} onMouseLeave={() => setToolShow(false)}>
+        <HStack w={"full"} minH={"80px"} bg={"#e1dfdf8a"} rounded={"12px"} shadow={"0 0 4px"} px={4} pos={"relative"} h={"fit-content"} gap={4} py={4} pr={6} onMouseOver={() => setToolShow(true)} onMouseLeave={() => setToolShow(false)} {...etcProps}>
             <VStack w={"72px"} h={"full"} justify={'center'} alignItems={"center"}>
                 <UserAvatar />
                 <Text fontWeight={"extrabold"} color={"var(--mainColor)"}>{message.sender.username ? message.sender.username : "Unknown"}</Text>

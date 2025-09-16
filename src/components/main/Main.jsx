@@ -1,11 +1,11 @@
 import { HStack, VStack } from "@chakra-ui/react"
 import { useContext, useState } from "react"
+import { SocketContext } from "../../providers/SocketProvider"
 import Files from "../tabs/Files"
 import Messages from "../tabs/Messages"
 import Pins from "../tabs/Pins"
 import TabList from "../tabs/TabList"
 import Thread from "../thread/Thread"
-import { SocketContext } from "../../providers/SocketProvider"
 
 const Main = () => {
     const { showThread } = useContext(SocketContext)
