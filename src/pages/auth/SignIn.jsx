@@ -7,13 +7,12 @@ const SignUp = () => {
     const [userInfo, setUserInfo] = useState({ email: "", password: "" });
     const changeUserInfo = (e) => setUserInfo({ ...userInfo, [e.target.name]: e.target.value })
     const navigate = useNavigate()
-
     return (
-        <VStack w={"full"} h={"100vh"} justify={"center"} align={"center"}>
-            <VStack w={"400px"} h={"500px"} rounded={"24px"} justify={"center"} align={"center"} gap={4} shadow={"0 0 8px black"} paddingInline={4}>
+        <VStack w={"full"} h={"100vh"} bg={"var(--mainColor)"} justify={"center"} align={"center"} color={"white"} p={"4"}>
+            <VStack maxW={"400px"} w={"100%"} h={"500px"} bg={"var(--secondaryColor)"} rounded={"24px"} justify={"center"} align={"center"} gap={4} shadow={"0 0 8px black"} px={8}>
                 <Text fontSize={24}>Please Sign In</Text>
-                <Input placeholder={"Email"} type={"text"} name="email" value={userInfo.email} onChange={changeUserInfo} />
-                <Input placeholder={"Password"} type={"password"} name="password" value={userInfo.password} onChange={changeUserInfo} />
+                <Input bg={"transparent"} placeholder={"Email"} type={"text"} name="email" value={userInfo.email} onChange={changeUserInfo} />
+                <Input bg={"transparent"} placeholder={"Password"} type={"password"} name="password" value={userInfo.password} onChange={changeUserInfo} />
                 <HStack w={"full"} justify={"flex-start"}>
                     <FormLabel display={"flex"}>
                         <Checkbox pr={4} />
@@ -26,7 +25,7 @@ const SignUp = () => {
                         <Link to={"/signup"}>Go to signup</Link>
                     </FormLabel>
                 </HStack>
-                <Button w={"full"} _hover={{ transform: "scaleX(1.04)" }} onClick={() => signIn(userInfo, navigate)}>Sign In</Button>
+                <Button w={"full"} bg={"var(--mainColor)"} shadow={"0 0 4px"} _hover={{ transform: "scaleX(1.04)" }} onClick={() => signIn(userInfo, navigate)}>Sign In</Button>
             </VStack>
         </VStack>
     )

@@ -1,11 +1,11 @@
 import { HStack, VStack } from "@chakra-ui/react"
 import { useContext, useState } from "react"
-import { SocketContext } from "../../providers/SocketProvider"
-import Files from "../tabs/Files"
-import Messages from "../tabs/Messages"
-import Pins from "../tabs/Pins"
-import TabList from "../tabs/TabList"
-import Thread from "../thread/Thread"
+import Files from "../components/tabs/Files"
+import Messages from "../components/tabs/Messages"
+import Pins from "../components/tabs/Pins"
+import TabList from "../components/tabs/TabList"
+import Thread from "../components/thread/Thread"
+import { SocketContext } from "../providers/SocketProvider"
 
 const Main = () => {
     const { showThread } = useContext(SocketContext)

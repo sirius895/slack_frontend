@@ -8,7 +8,7 @@ const Layout = () => {
     return (
         <VStack w={"full"} h={"100vh"} gap={0}>
             <Header />
-            <HStack w={"full"} flexGrow={1} gap={0} style={{ margin: 0 }} bg={"var(--mainColor)"} pr={2}>
+            <HStack w={"full"} flexGrow={1} gap={0} bg={"var(--mainColor)"} pr={2}>
                 <SideBar />
                 <MenuBar />
                 <Flex h={"full"} flex={"1 1 0"} overflowX={"auto"}>

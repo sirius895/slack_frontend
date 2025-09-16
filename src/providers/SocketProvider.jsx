@@ -29,19 +29,21 @@ const SocketProvider = ({ children }) => {
   const [messages, setMessages] = useState([])
   const [isConnected, setIsConnected] = useState(false);
   const { user } = useContext(AuthContext)
-  const { channel, message } = useParams()
+  const { channel } = useParams()
   const [showThread, setShowThread] = useState(false)
 
   const socket = useMemo(() => io(`${process.env.REACT_APP_BASE_URL}`, { extraHeaders: { token: localStorage.getItem("token") } }), [localStorage.getItem("token")]);
 
-  socket.on('connect', () => {
-    setIsConnected(true);
-  });
+  useEffect(() => {
+    socket.on('connect', () => {
+      setIsConnected(true);
+    });
 
-  socket.on('disconnect', () => {
-    setIsConnected(false);
-    toast.ERROR("Socket disconnected!")
-  });
+    socket.on('disconnect', () => {
+      setIsConnected(false);
+      toast.ERROR("Socket disconnected!")
+    });
+  }, [])
 
   const listenChannelReadByUserID = (status, data) => {
     if (status && data) setChannels(data);

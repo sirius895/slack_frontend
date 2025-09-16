@@ -14,7 +14,7 @@ import UserAvatar from "./UserAvatar"
 const Message = (props) => {
     const { message, ...etcProps } = props
     const { user } = useContext(AuthContext)
-    const { socket, setShowThread } = useContext(SocketContext)
+    const { socket, showThread, setShowThread } = useContext(SocketContext)
     const [toolShow, setToolShow] = useState(false)
     const [emoShow, setEmoShow] = useState(false)
     const navigate = useNavigate()
@@ -38,13 +38,10 @@ const Message = (props) => {
             const group = prev.some(prev => prev.code === emoticon.code);
             if (!group) { return [...prev, { code: emoticon.code, users: [emoticon.sender] }]; }
             return prev.map(group => {
-                if (group.code === emoticon.code) {
-                    return {
-                        code: emoticon.code,
-                        users: [...group.users, emoticon.sender],
-                    }
-                }
-                return group;
+                return group.code === emoticon.code ? {
+                    code: emoticon.code,
+                    users: [...group.users, emoticon.sender],
+                } : group
             });
         }, []);
     }, [message]);
@@ -80,7 +77,7 @@ const Message = (props) => {
                         {!message.parentID &&
                             <>
                                 < AiFillPushpin onClick={handlePin} />
-                                <FaCommentDots onClick={() => { setShowThread(true); navigate(`/chatting/home/${channel}/${message._id}`) }} />
+                                <FaCommentDots onClick={() => { setShowThread(!showThread); navigate(`/chatting/home/${channel}/${message._id}`) }} />
                             </>
                         }
                         {message.sender._id === user._id && <FaTrash onClick={() => handleDelete(message._id)} />}

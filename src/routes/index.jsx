@@ -1,24 +1,25 @@
 import { useRoutes } from "react-router-dom"
 
-import Auth from "../pages/auth"
-import Main from "../components/main/Main"
+import Pages from "../pages"
+// import Auth from "../pages/auth"
+// import Main from "../pages/Main"
 import Layout from "../layouts"
-// import SignIn from "../pages/auth/SignIn"
-// import SignUp from "../pages/auth/SignUp"
-import Icons from "../pages/Icons"
-import NotFound from "../pages/NotFound"
+// // import SignIn from "../pages/auth/SignIn"
+// // import SignUp from "../pages/auth/SignUp"
+// import Icons from "../pages/Icons"
+// import NotFound from "../pages/NotFound"
 import SocketProvider from "../providers/SocketProvider"
 
 const routes = [
-    { path: "/", element: < Auth.SignIn /> },
-    { path: "/signup", element: < Auth.SignUp /> },
+    { path: "/", element: < Pages.Auth.SignIn /> },
+    { path: "/signup", element: < Pages.Auth.SignUp /> },
     {
         path: "/chatting/:page/:channel/:message", element: <SocketProvider><Layout /></SocketProvider>, children: [{
-            path: "", element: <Main />
+            path: "", element: <Pages.Main />
         }]
     },
-    { path: "/icons", element: < Icons /> },
-    { path: "*", element: < NotFound /> }
+    { path: "/icons", element: < Pages.Icons /> },
+    { path: "*", element: < Pages.NotFound /> }
 ]
 
 const AppRoutes = () => {
