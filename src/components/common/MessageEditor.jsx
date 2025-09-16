@@ -23,10 +23,11 @@ const MessageEditor = ({ isForThread }) => {
     }, [channelID, channels, users])
 
     const initState = {
-        sender: "", channelID, mentios: [],
+        sender: "", channelID, mentions: [],
         content: "", files: [], emoticons: [],
         pinnedBy: [], isDraft: false, parentID: isForThread ? messageID : null, childCount: 0
     }
+
     const [message, setMessage] = useState(initState);
     const changeContent = (e) => {
         if (e.target.value === "@") { setMentionShow(true); return; }
@@ -50,6 +51,15 @@ const MessageEditor = ({ isForThread }) => {
             emoticons: msg.emoticons.find(emo => emo.code === code)
                 ? msg.emoticons.filter(emo => emo.code !== code)
                 : [...msg.emoticons, { sender: user._id, code }]
+        }))
+    }
+
+    const handleMentions = (user) => {
+        setMessage(msg => ({
+            ...msg,
+            mentions: msg.mentions.find(m => m === user._id)
+                ? msg.mentions.filter(m => m !== user._id)
+                : [...msg.mentions, user._id]
         }))
     }
 
@@ -86,17 +96,20 @@ const MessageEditor = ({ isForThread }) => {
                 <FaBold />
                 <FaItalic />
                 {typingList.length > 0 && (
-                    <Text w={"full"} fontWeight={"bold"} fontSize="16px">
+                    <Text w={"full"} fontWeight={"bold"} fontSize="16px" color={""}>
                         {typingList.map(userId => users.find(user => user._id === userId)?.username).join(', ')} is typing...
                     </Text>
                 )}
+                <HStack gap={4}>{message.mentions.map((m, i) => <Text key={i} fontFamily={"cursive"} fontWeight={"bold"} color={"var(--markUpColor)"}>@{users?.find(u => u._id === m)?.username}</Text>)}</HStack>
             </HStack>
-            {mentionShow && <HStack w={"full"} pos={"relative"}>
-                <VStack w={"80px"} pos={"absolute"} rounded={"8px"} py={2} bg={"white"} shadow={"0 0 3px"} left={4} bottom={0}>
-                    {members.length && members?.map((m, i) => <Text key={i} w={"full"} p={2}
+            {!isForThread && mentionShow && <HStack w={"full"} pos={"relative"} onMouseLeave={() => setMentionShow(false)}>
+                <VStack w={"80px"} pos={"absolute"} zIndex={5} rounded={"8px"} py={2} bg={"white"} shadow={"0 0 3px"} left={4} top={0}>
+                    {members.length && members?.map((m, i) => <Text key={i} w={"full"} p={1} maxH={"300px"} overflowY={"auto"}
                         cursor={"pointer"} _hover={{ bg: "#e1dfdf8a" }}
+                        onClick={() => handleMentions(m)}
                         overflow={"hidden"} textOverflow={"ellipsis"}
-                        whiteSpace={"nowrap"}>{m.username}</Text>
+                        whiteSpace={"nowrap"} fontWeight={"bold"} color={"var(--markUpColor)"}
+                    >{m.username}</Text>
                     )}
                 </VStack>
             </HStack>}
@@ -111,7 +124,7 @@ const MessageEditor = ({ isForThread }) => {
                     <FaPlus />
                     <HStack pos={"relative"} onMouseLeave={() => setEmoShow(false)}>
                         <FaRegSmile onClick={() => setEmoShow(!emoShow)} />
-                        {emoShow && <Emoticons maxW={"200px"} pos={"absolute"} bottom={"100%"} left={0} handleEmos={handleEmos} />}
+                        {emoShow && <Emoticons w={"200px"} pos={"absolute"} bottom={"100%"} left={0} handleEmos={handleEmos} />}
                     </HStack>
                 </HStack>
                 <HStack>

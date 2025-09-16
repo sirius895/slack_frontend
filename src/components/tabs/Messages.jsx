@@ -15,17 +15,17 @@ const Messages = () => {
     const { user } = useContext(AuthContext)
 
     const listenMessageCreate = useCallback((status, data) => {
-        if (status && data && data.channelID === channel) setMessages([...messages, data])
+        if (status && data && data.channelID === channel && !data.parentID) setMessages([...messages, data])
         else toast.ERROR(data.message)
     }, [messages, setMessages])
 
     const listenMessageUpdate = useCallback((status, data) => {
-        if (status && data) setMessages(msgs => msgs.map(msg => msg._id === data._id ? data : msg))
+        if (status && data && data.channelID === channel && !data.parentID) setMessages(msgs => msgs.map(msg => msg._id === data._id ? data : msg))
         else toast.ERROR(data.message)
     }, [setMessages])
 
     const listenMessageDelete = useCallback((status, data) => {
-        if (status && data) setMessages(msgs => msgs.filter(m => m._id !== data))
+        if (status && data && data.channelID === channel && !data.parentID) setMessages(msgs => msgs.filter(m => m._id !== data._id))
         else toast.ERROR(data.message)
     }, [setMessages])
 
@@ -54,9 +54,9 @@ const Messages = () => {
     return (
         <HStack w={"full"} h={"full"}>
             <VStack flex={"1 1 0"} h={"full"} p={4}>
-                <VStack w={"full"} flex={"1 1 0"} px={2} pt={4} overflowY={"auto"} scrollBehavior={"smooth"} gap={4}>
+                <VStack w={"full"} flex={"1 1 0"} px={2} py={4} overflowY={"auto"} scrollBehavior={"smooth"} gap={4}>
                     <VStack w={"full"} gap={8} ref={messageRef}>
-                        {messages.length && messages.map((m, i) => m.channelID === channel && !m.parentID && <HStack w={"full"} key={i} justify={m.sender._id !== user._id && "flex-end"}><Message message={m} w={"60%"} maxW={"600px"} /></HStack>)}
+                        {messages.length && messages.map((m, i) => m.channelID === channel && !m.parentID && <HStack w={"full"} key={i} justify={m.sender._id !== user._id && "flex-end"}><Message message={m} w={"100%"} maxW={"600px"} /></HStack>)}
                     </VStack>
                 </VStack>
                 <VStack w={"full"} h={"180px"} maxH={"180px"}>

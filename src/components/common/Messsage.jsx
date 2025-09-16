@@ -14,7 +14,7 @@ import UserAvatar from "./UserAvatar"
 const Message = (props) => {
     const { message, ...etcProps } = props
     const { user } = useContext(AuthContext)
-    const { socket, showThread, setShowThread } = useContext(SocketContext)
+    const { socket, showThread, setShowThread, users } = useContext(SocketContext)
     const [toolShow, setToolShow] = useState(false)
     const [emoShow, setEmoShow] = useState(false)
     const navigate = useNavigate()
@@ -47,17 +47,18 @@ const Message = (props) => {
     }, [message]);
 
     return (
-        <HStack w={"full"} minH={"80px"} bg={"#e1dfdf8a"} rounded={"12px"} shadow={"0 0 4px"} px={4} pos={"relative"} h={"fit-content"} gap={4} py={4} pr={6} onMouseOver={() => setToolShow(true)} onMouseLeave={() => setToolShow(false)} {...etcProps}>
+        <HStack w={"full"} minH={"80px"} bg={"#e1dfdf8a"} rounded={"12px"} shadow={"0 0 4px"} pos={"relative"} h={"fit-content"} gap={4} py={2} px={4} onMouseOver={() => setToolShow(true)} onMouseLeave={() => setToolShow(false)} {...etcProps}>
             <VStack w={"72px"} h={"full"} justify={'center'} alignItems={"center"}>
                 <UserAvatar />
                 <Text fontWeight={"extrabold"} color={"var(--mainColor)"}>{message.sender.username ? message.sender.username : "Unknown"}</Text>
             </VStack>
-            <VStack flexGrow={1} h={"full"} pl={2} pt={2} justifyContent={"flex-start"}>
-                <Text w={"full"} h={"50px"} fontWeight={"bold"}>{formatTime(message.createdAt)}</Text>
+            <VStack w={"full"} minH={"80px"} pl={2} justifyContent={"flex-start"}>
+                <Text w={"full"} fontWeight={"bold"}>{formatTime(message.createdAt)}</Text>
+                <HStack w={"full"} gap={2} flexWrap={"wrap"}>{message.mentions.map((m, i) => <Text key={i} fontFamily={"cursive"} fontWeight={"bold"} color={"var(--markUpColor)"}>@{users?.find(u => u._id === m)?.username}</Text>)}</HStack>
                 <HStack w={"full"} flex={"1 1 0"} alignItems={"flex-start"}>
                     <Text w={"full"} whiteSpace={"normal"} flexWrap={"wrap"} fontFamily={"cursive"}>{message.content}</Text>
                 </HStack>
-                <HStack w={"full"} gap={2}>
+                <HStack w={"full"} gap={2} flexWrap={"wrap"}>
                     {emoticons.map((emo, i) => (
                         <HStack key={i}>
                             <Emoticon key={i} id={emo.code} onClick={() => handleEmos(emo.code)} />

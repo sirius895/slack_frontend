@@ -10,6 +10,7 @@ import { SocketContext } from "../providers/SocketProvider"
 const Main = () => {
     const { showThread } = useContext(SocketContext)
     const [curTab, setCurTab] = useState("messages")
+
     return (
         <HStack w={"full"} h={"full"} roundedRight={"8px"}>
             <VStack flex={"1 1 0"} h={"full"} bg={"white"}>

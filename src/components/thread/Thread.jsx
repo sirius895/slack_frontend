@@ -22,17 +22,17 @@ const Thread = () => {
     }
 
     const listenMessageCreate = useCallback((status, data) => {
-        if (status && data) setMessages([...messages, data])
+        if (status && data.parentID === message) setMessages([...messages, data])
         else toast.ERROR(data.message)
     }, [messages])
 
     const listenMessageUpdate = useCallback((status, data) => {
-        if (status && data) setMessages(msgs => msgs.map(msg => msg._id === data._id ? data : msg))
+        if (status && data.parentID === message) setMessages(msgs => msgs.map(msg => msg._id === data._id ? data : msg))
         else toast.ERROR(data.message)
     }, [messages])
 
     const listenMessageDelete = useCallback((status, data) => {
-        if (status && data) setMessages(msgs => msgs.filter(m => m._id !== data))
+        if (status && data.parentID === message) setMessages(msgs => msgs.filter(m => m._id !== data._id))
         else toast.ERROR(data.message)
     }, [messages])
 
@@ -80,7 +80,7 @@ const Thread = () => {
             <VStack w={"full"} flex={"1 1 0"} overflowY={"auto"} py={4}>
                 <VStack w={"full"} px={4} flex={"1 1 0"} scrollBehavior={"smooth"} gap={4}>
                     <VStack w={"full"} ref={messageRef} gap={8}>
-                        {messages.length && messages.map((m, i) => <HStack w={"full"} key={i} justify={m.sender._id !== user._id && "flex-end"}><Message message={m} w={"80%"} maxW={"300px"} /></HStack>)}
+                        {messages.length && messages.map((m, i) => <HStack w={"full"} key={i} justify={m.sender._id !== user._id && "flex-end"}><Message message={m} w={"88%"} maxW={"300px"} /></HStack>)}
                     </VStack>
                 </VStack>
                 <VStack w={"full"} h={"180px"} max={"180px"} px={4}>

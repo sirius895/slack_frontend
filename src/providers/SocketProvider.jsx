@@ -29,7 +29,7 @@ const SocketProvider = ({ children }) => {
   const [messages, setMessages] = useState([])
   const [isConnected, setIsConnected] = useState(false);
   const { user } = useContext(AuthContext)
-  const { channel } = useParams()
+  const { channel, message } = useParams()
   const [showThread, setShowThread] = useState(false)
 
   const socket = useMemo(() => io(`${process.env.REACT_APP_BASE_URL}`, { extraHeaders: { token: localStorage.getItem("token") } }), [localStorage.getItem("token")]);
@@ -92,6 +92,10 @@ const SocketProvider = ({ children }) => {
       socket.removeListener(`${TYPES.MESSAGE}_${METHODS.READ_BY_CHANNEL_ID}`, listenMessageReadByChannelID)
     }
   }, [channel])
+
+  useEffect(() => {
+    message && setShowThread(true)
+  }, [])
 
   return (
     <SocketContext.Provider
