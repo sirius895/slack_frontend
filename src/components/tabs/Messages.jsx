@@ -6,11 +6,13 @@ import toast from "../../utils/toast"
 import MessageEditor from "../common/MessageEditor"
 import Message from "../common/Messsage"
 import { useParams } from "react-router-dom"
+import { AuthContext } from "../../providers/AuthProvider"
 
 const Messages = () => {
     const { socket, messages, setMessages } = useContext(SocketContext)
     const messageRef = useRef(null)
     const { channel } = useParams()
+    const { user } = useContext(AuthContext)
 
     const listenMessageCreate = useCallback((status, data) => {
         if (status && data && data.channelID === channel) setMessages([...messages, data])
@@ -52,9 +54,9 @@ const Messages = () => {
     return (
         <HStack w={"full"} h={"full"}>
             <VStack flex={"1 1 0"} h={"full"} p={4}>
-                <VStack w={"full"} flex={"1 1 0"} overflowY={"auto"} scrollBehavior={"smooth"} gap={4}>
-                    <VStack w={"full"} ref={messageRef}>
-                        {messages.length && messages.map((m, i) => m.channelID === channel && !m.parentID && <Message key={i} message={m} />)}
+                <VStack w={"full"} flex={"1 1 0"} px={2} py={4} overflowY={"auto"} scrollBehavior={"smooth"} gap={4}>
+                    <VStack w={"full"} gap={8} ref={messageRef}>
+                        {messages.length && messages.map((m, i) => m.channelID === channel && !m.parentID && <HStack w={"full"} key={i} justify={m.sender._id !== user._id && "flex-end"}><Message message={m} /></HStack>)}
                     </VStack>
                 </VStack>
                 <VStack w={"full"} h={"180px"}>

@@ -1,17 +1,17 @@
-import { VStack, Text, HStack, list } from "@chakra-ui/react"
+import { HStack, Text, VStack } from "@chakra-ui/react";
 import { useContext, useEffect, useState } from "react";
-import * as FaIcons from "react-icons/fa"
-import { useNavigate } from "react-router-dom"
+import * as FaIcons from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 import UserAvatar from "../components/common/UserAvatar";
-import { SocketContext } from "../providers/SocketProvider";
 import { METHODS, TYPES } from "../constants/chat";
 import { AuthContext } from "../providers/AuthProvider";
+import { SocketContext } from "../providers/SocketProvider";
 import toast from "../utils/toast";
 
 const SideBar = () => {
     const navigate = useNavigate();
     const [setActivatedItem] = useState("HOME");
-    const { socket } = useContext(SocketContext)
+    const { socket, setUsers } = useContext(SocketContext)
     const { user, setUser } = useContext(AuthContext)
     const [showStateBar, setShowStateBar] = useState(false)
     const pageNavigate = (url, key) => {
@@ -25,8 +25,6 @@ const SideBar = () => {
         { label: "Sign Out", state: 0 },
     ]
     const changeState = (state) => {
-        console.log(state);
-
         socket.emit(`${TYPES.AUTH}_${METHODS.UPDATE}`, { state })
     }
     const handleSignOut = () => {
@@ -36,17 +34,19 @@ const SideBar = () => {
     }
 
     const listenChangeState = (status, data) => {
-        console.log(data);
-
         if (status && data) setUser(data)
         else toast.ERROR(data.message)
     }
+    const listenBroadcast = (status, data) => {
+        if (status && data) setUsers(users => users.map(u => u._id === data._id ? data : u))
+        else toast.ERROR(data.message)
+    }
+
     useEffect(() => {
         socket.on(`${TYPES.AUTH}_${METHODS.UPDATE}`, listenChangeState)
-        socket.on('broadcast', (status, data) => console.log(data))
+        socket.on(`${TYPES.AUTH}_${METHODS.BROADCAST}`, listenBroadcast)
         return () => socket.removeListener(`${TYPES.AUTH}_${METHODS.UPDATE}`, listenChangeState)
     }, [])
-    console.log(user.state);
 
     return (
         <VStack minW={"var(--sideW)"} h={"full"} color={"white"} paddingBlock={4} bg={"var(--mainColor)"} justify={"space-between"}>

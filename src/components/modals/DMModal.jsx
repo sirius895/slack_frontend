@@ -14,21 +14,18 @@ const DMModal = (props) => {
   const [tmp, setTmp] = useState([])
   const [keyword, setKeyword] = useState("")
 
-  const changeChannel = (e) => {
-    setChannel({ ...channel, [e.target.name]: e.target.value })
-  }
-
-  const changeMembers = (_id) => {
+  const changeMembers = (u) => {
     setChannel({
       ...channel,
-      members: !channel.members.includes(_id) ?
-        [user._id, _id] :
-        channel.members.filter(v => v !== _id)
+      name: `${user.username} & ${u.username}`,
+      members: !channel.members.includes(u._id) ?
+        [user._id, u._id] :
+        channel.members.filter(v => v !== u._id)
     })
   }
 
   const handleCreate = () => {
-    socket.emit(`${TYPES.CHANNEL}_${METHODS.CREATE}`, { ...channel, creator: user._id, members: [...channel.members, user._id] })
+    socket.emit(`${TYPES.CHANNEL}_${METHODS.CREATE}`, { ...channel, creator: user._id })
     handleCancel()
   }
 
@@ -72,18 +69,20 @@ const DMModal = (props) => {
       <ModalContent w={"full"} h="50%" minH={"400px"} alignItems={"center"} justifyContent={"center"}>
         <ModalHeader display={"flex"} w={"full"} alignItems={"center"} justifyContent={"center"}>Invite</ModalHeader>
         <ModalBody display={"flex"} flexDir={"column"} paddingInline={4} w={"full"} gap={4}>
-          <Input w={"full"} name="name" placeholder="Chanel Name" value={channel.name} onChange={changeChannel} />
           <Input w={"full"} placeholder="Search Users" value={keyword} onChange={(e) => setKeyword(e.target.value)} />
           <VStack w={"full"} border={"1px solid #e2e8f0"} flexGrow={1} rounded={"8px"} overflowY={"auto"}>
             {
               tmp.map((u, i) => {
-                return (u._id !== user._id && <HStack key={i} w={"full"} cursor={"pointer"} onClick={() => changeMembers(u._id)} paddingInline={4} paddingBlock={2} justify={"space-between"}>
-                  <HStack gap={4}>
-                    <Avatar w={'32px'} h={"32px"} />
-                    <Text>{u.username}</Text>
-                  </HStack>
-                  {channel.members.includes(u._id) && <FaCheck />}
-                </HStack>)
+                return (
+                  u._id !== user._id && <HStack key={i} w={"full"} cursor={"pointer"}
+                    onClick={() => changeMembers(u)}
+                    paddingInline={4} paddingBlock={2} justify={"space-between"}>
+                    <HStack gap={4}>
+                      <Avatar w={'32px'} h={"32px"} />
+                      <Text>{u.username}</Text>
+                    </HStack>
+                    {channel.members.includes(u._id) && <FaCheck />}
+                  </HStack>)
               })
             }
           </VStack>

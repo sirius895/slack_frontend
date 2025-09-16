@@ -9,6 +9,7 @@ import { SocketContext } from "../../providers/SocketProvider"
 import Emoticon from "./Emoticon"
 import Emoticons from "./Emoticons"
 import UserAvatar from "./UserAvatar"
+import { formatTime } from "../../utils/time"
 
 const Message = (props) => {
     const { message } = props
@@ -34,10 +35,10 @@ const Message = (props) => {
 
     const emoticons = useMemo(() => {
         return message.emoticons.reduce((prev, emoticon) => {
-            const group = prev.some(prev => prev.code == emoticon.code);
+            const group = prev.some(prev => prev.code === emoticon.code);
             if (!group) { return [...prev, { code: emoticon.code, users: [emoticon.sender] }]; }
             return prev.map(group => {
-                if (group.code == emoticon.code) {
+                if (group.code === emoticon.code) {
                     return {
                         code: emoticon.code,
                         users: [...group.users, emoticon.sender],
@@ -49,14 +50,15 @@ const Message = (props) => {
     }, [message]);
 
     return (
-        <HStack w={"full"} minH={"80px"} pos={"relative"} h={"fit-content"} py={4} pr={6} onMouseOver={() => setToolShow(true)} onMouseLeave={() => setToolShow(false)}>
+        <HStack w={"60%"} maxW={"600px"} minH={"80px"} bg={"#e1dfdf8a"} rounded={"12px"} shadow={"0 0 4px"} px={4} pos={"relative"} h={"fit-content"} gap={4} py={4} pr={6} onMouseOver={() => setToolShow(true)} onMouseLeave={() => setToolShow(false)}>
             <VStack w={"72px"} h={"full"} justify={'center'} alignItems={"center"}>
                 <UserAvatar />
-                <Text>{message.sender.username ? message.sender.username : "Unknown"}</Text>
+                <Text fontWeight={"extrabold"} color={"var(--mainColor)"}>{message.sender.username ? message.sender.username : "Unknown"}</Text>
             </VStack>
             <VStack flexGrow={1} h={"full"} pl={2} pt={2} justifyContent={"flex-start"}>
+                <Text w={"full"} h={"50px"} fontWeight={"bold"}>{formatTime(message.createdAt)}</Text>
                 <HStack w={"full"} flex={"1 1 0"} alignItems={"flex-start"}>
-                    <Text w={"full"} whiteSpace={"normal"} flexWrap={"wrap"}>{message.content}</Text>
+                    <Text w={"full"} whiteSpace={"normal"} flexWrap={"wrap"} fontFamily={"cursive"}>{message.content}</Text>
                 </HStack>
                 <HStack w={"full"} gap={2}>
                     {emoticons.map((emo, i) => (

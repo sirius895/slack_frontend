@@ -1,4 +1,4 @@
-import { Avatar, HStack, Text, VStack } from "@chakra-ui/react"
+import { HStack, Text, VStack } from "@chakra-ui/react"
 import { useCallback, useContext, useEffect, useState } from "react"
 import { FaCaretDown, FaCaretRight, FaEdit, FaPlus, FaTrash } from "react-icons/fa"
 import { useNavigate } from "react-router-dom"
@@ -6,6 +6,7 @@ import { METHODS, TYPES } from "../../constants/chat"
 import { AuthContext } from "../../providers/AuthProvider"
 import { SocketContext } from "../../providers/SocketProvider"
 import toast from "../../utils/toast"
+import UserAvatar from "../common/UserAvatar"
 import ChannelDeleteModal from "../modals/ChannelDeleteModal"
 import DMModal from "../modals/DMModal"
 
@@ -20,7 +21,7 @@ const DMList = () => {
     const listenCreate = useCallback((status, data) => {
         if (status && data) setChannels([...channels, data])
         else toast.ERROR(data.message)
-    }, [channels, setChannels])
+    }, [channels])
 
     const listenUpdate = useCallback((status, data) => {
         if (status && data) setChannels(channels => channels.map((c) => c._id === data._id ? data : c))
@@ -35,7 +36,7 @@ const DMList = () => {
     useEffect(() => {
         socket.on(`${TYPES.CHANNEL}_${METHODS.CREATE}`, listenCreate)
         return () => socket.removeListener(`${TYPES.CHANNEL}_${METHODS.CREATE}`, listenCreate)
-    }, [listenCreate, socket])
+    }, [listenCreate])
 
     useEffect(() => {
         socket.on(`${TYPES.CHANNEL}_${METHODS.UPDATE}`, listenUpdate)
@@ -64,7 +65,7 @@ const DMList = () => {
                             _hover={{ backgroundColor: "var(--fontColor)" }} cursor={"pointer"}
                             justify={"space-between"} onClick={() => { setCurChannel(channel); navigate(`/chatting/home/${channel._id}/@`) }}>
                             <HStack gap={2}>
-                                <Avatar w={"24px"} h={"24px"} />
+                                <UserAvatar w={"32px"} h={"32px"} borderColor={"var(--secondaryColor)"} showState={true} state={users.find(u => u._id === channel.members.find(m => m !== user._id)).state} />
                                 <Text>{users.find(u => u._id === channel.members.find(m => m !== user._id)).username}</Text>
                             </HStack>
                             <HStack gap={2}>

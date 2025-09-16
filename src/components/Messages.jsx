@@ -5,7 +5,7 @@ import Message from "../components/Message";
 import SendMessage from "../components/SendMessage";
 import { METHOD, REQUEST, STATUS } from "../constants/chat";
 import { SocketContext } from "../providers/SocketProvider";
-import { formatDate } from "../utils";
+import { formatDate } from "../utils/time";
 
 const Messages = ({ channelId, messageId, ...props }) => {
   const { socket } = useContext(SocketContext);

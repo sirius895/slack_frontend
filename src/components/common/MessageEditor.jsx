@@ -45,10 +45,10 @@ const MessageEditor = ({ isForThread }) => {
     }
 
     const listenTyping = (status, data) => {
-        if (data.channelID == channelID) {
-            const removeUser = () => setTypingList(prev => prev.filter(user => user != data.user));
+        if (data.channelID === channelID && status) {
+            const removeUser = () => setTypingList(prev => prev.filter(user => user !== data.user));
             setTypingList((prev) => {
-                if (prev.some(user => user == data.user)) {
+                if (prev.some(user => user === data.user)) {
                     clearTimeout(timerRef.current[data.user]);
                     timerRef.current[data.user] = setTimeout(removeUser, 2000);
                     return prev;
@@ -59,9 +59,7 @@ const MessageEditor = ({ isForThread }) => {
         }
     }
 
-    const removeEmos = (no) => {
-        setMessage(msg => ({ ...msg, emoticons: msg.emoticons.filter((m, i) => i !== no) }))
-    }
+    const removeEmos = (no) => setMessage(msg => ({ ...msg, emoticons: msg.emoticons.filter((m, i) => i !== no) }))
 
     useEffect(() => {
         if (user._id) setMessage(m => ({ ...m, sender: user._id }))
@@ -80,7 +78,7 @@ const MessageEditor = ({ isForThread }) => {
                 <FaItalic />
                 {typingList.length > 0 && (
                     <Text w={"full"} fontWeight={"bold"} fontSize="16px">
-                        {typingList.map(userId => users.find(user => user._id == userId)?.username).join(', ')} is typing...
+                        {typingList.map(userId => users.find(user => user._id === userId)?.username).join(', ')} is typing...
                     </Text>
                 )}
             </HStack>
