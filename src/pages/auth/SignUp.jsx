@@ -10,7 +10,10 @@ const SignUp = () => {
     const changeUserInfo = (e) => setUserInfo({ ...userInfo, [e.target.name]: e.target.value })
     const navigate = useNavigate()
     const handleSignUp = () => {
-        const data = { username: userInfo.username, email: userInfo.email, password: userInfo.password, avatar: "default.gif" }
+        const data = {
+            username: userInfo.username, email: userInfo.email, password: userInfo.password, avatar: "default.gif",
+            confirmPassword: userInfo.confirmPassword
+        }
         signUp(data, navigate)
     }
     const handleAvatar = (e) => {

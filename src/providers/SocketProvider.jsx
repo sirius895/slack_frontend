@@ -94,7 +94,7 @@ const SocketProvider = ({ children }) => {
   }, [channel])
 
   useEffect(() => {
-    message && setShowThread(true)
+    message.length > 1 && setShowThread(true)
   }, [])
 
   return (
