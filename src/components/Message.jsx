@@ -1,4 +1,4 @@
-import { Avatar, Badge, Box, Flex, Grid, HStack, Popover, PopoverContent, PopoverTrigger, Text, VStack } from "@chakra-ui/react";
+import { Avatar, Badge, Flex, Grid, HStack, Popover, PopoverContent, PopoverTrigger, Text, VStack } from "@chakra-ui/react";
 import { useContext, useMemo, useState } from "react";
 import { FaEdit, FaRegCommentDots, FaRegSmile, FaRegTrashAlt } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
@@ -96,7 +96,7 @@ const Message = ({ showDate, channelId, messageId, message }) => {
                 )}
                 <HStack>
                   {emoticons.map((emoticon, index) => (
-                    <Box key={index} cursor='pointer'
+                    <HStack key={index} cursor='pointer'
                       onClick={() => handleEmoticon(emoticon.code)}
                     >
                       <Flex align='center' gap={0.5}>
@@ -105,7 +105,7 @@ const Message = ({ showDate, channelId, messageId, message }) => {
                           {emoticon.users.length}
                         </Text>
                       </Flex>
-                    </Box>
+                    </HStack>
                   ))}
                 </HStack>
               </Flex>
@@ -116,9 +116,9 @@ const Message = ({ showDate, channelId, messageId, message }) => {
           <HStack p={2} gap={2}>
             <Popover>
               <PopoverTrigger>
-                <Box cursor='pointer'>
+                <HStack cursor='pointer'>
                   <FaRegSmile />
-                </Box>
+                </HStack>
               </PopoverTrigger>
               <PopoverContent w='unset' p={2}>
                 <Grid gap={1} templatecolumns='repeat(8, minmax(0, 1fr))'>
@@ -127,16 +127,16 @@ const Message = ({ showDate, channelId, messageId, message }) => {
               </PopoverContent>
             </Popover>
             {messageId == null && (
-              <Box cursor='pointer' onClick={() => navigate(`/?channel=${channelId}&message=${message._id}`)}>
+              <HStack cursor='pointer' onClick={() => navigate(`/?channel=${channelId}&message=${message._id}`)}>
                 <FaRegCommentDots />
-              </Box>
+              </HStack>
             )}
-            <Box cursor='pointer' onClick={() => setIsEditing(true)} >
+            <HStack cursor='pointer' onClick={() => setIsEditing(true)} >
               <FaEdit />
-            </Box>
-            <Box cursor='pointer' onClick={handleDelete} >
+            </HStack>
+            <HStack cursor='pointer' onClick={handleDelete} >
               <FaRegTrashAlt color="red" />
-            </Box>
+            </HStack>
           </HStack>
         </PopoverContent>
       </Popover >
