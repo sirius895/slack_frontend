@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { io } from "socket.io-client";
 import { METHODS, TYPES } from "../constants/chat";
 import api from "../libs/axios";
@@ -31,6 +31,7 @@ const SocketProvider = ({ children }) => {
   const { user } = useContext(AuthContext);
   const { channel, message } = useParams();
   const [showThread, setShowThread] = useState(false);
+  const navigate = useNavigate();
 
   const socket = useMemo(
     () => io(`${process.env.REACT_APP_BASE_URL}`, { extraHeaders: { token: localStorage.getItem("token") } }),
@@ -49,19 +50,18 @@ const SocketProvider = ({ children }) => {
   }, []);
 
   const listenChannelReadByUserID = (status, data) => {
-    if (status && data) setChannels(data);
-    else toast.ERROR(data.message);
+    if (status && data) {
+      setChannels(data);
+    } else toast.ERROR(data.message);
   };
 
   const listenMessageReadByChannelID = (status, data) => {
-    console.log(data);
-
     if (status && data) setMessages(data);
     else toast.ERROR(data.message);
   };
 
   useEffect(() => {
-    if (user._id) {
+    if (user?._id) {
       try {
         (async () => {
           const res = await api.get("/user");
@@ -71,18 +71,19 @@ const SocketProvider = ({ children }) => {
         toast.ERROR("Error Occured");
       }
     }
-  }, [user._id]);
+  }, [user?._id]);
 
   useEffect(() => {
-    if (user._id) {
+    if (user?._id) {
       socket.emit(TYPES.AUTH, token);
-      socket.emit(`${TYPES.CHANNEL}_${METHODS.READ_BY_USER_ID}`, user._id);
+      // socket.emit(`${TYPES.AUTH}_${METHODS.UPDATE}`, { state: 3 });
+      socket.emit(`${TYPES.CHANNEL}_${METHODS.READ_BY_USER_ID}`, user?._id);
       socket.on(`${TYPES.CHANNEL}_${METHODS.READ_BY_USER_ID}`, listenChannelReadByUserID);
     }
     return () => {
       socket.removeListener(`${TYPES.CHANNEL}_${METHODS.READ_BY_USER_ID}`, listenChannelReadByUserID);
     };
-  }, [user._id]);
+  }, [user?._id]);
 
   useEffect(() => {
     socket.on(TYPES.AUTH, (status, data) => {
@@ -91,7 +92,7 @@ const SocketProvider = ({ children }) => {
   }, []);
 
   useEffect(() => {
-    if (channel.length > 1) {
+    if (channel.length > 10) {
       socket.emit(`${TYPES.MESSAGE}_${METHODS.READ_BY_CHANNEL_ID}`, channel);
       socket.on(`${TYPES.MESSAGE}_${METHODS.READ_BY_CHANNEL_ID}`, listenMessageReadByChannelID);
     }
@@ -101,7 +102,7 @@ const SocketProvider = ({ children }) => {
   }, [channel]);
 
   useEffect(() => {
-    message.length > 1 && setShowThread(true);
+    message.length > 10 && setShowThread(true);
   }, []);
 
   return (

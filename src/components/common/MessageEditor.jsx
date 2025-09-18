@@ -17,6 +17,8 @@ const MessageEditor = ({ isForThread }) => {
   const [typingList, setTypingList] = useState([]);
   const timerRef = useRef({});
   const [mentionShow, setMentionShow] = useState(false);
+  const [bold, setBold] = useState(false);
+  const [italic, steItalic] = useState(false);
 
   const members = useMemo(() => {
     const memberIDs = channels.find((c) => c._id === channelID)?.members;
@@ -39,7 +41,8 @@ const MessageEditor = ({ isForThread }) => {
 
   const [message, setMessage] = useState(initState);
   const changeContent = (e) => {
-    if (e.target.value === "@") {
+    const value = e.target.value;
+    if (value[value.length - 1] === "@") {
       setMentionShow(true);
       return;
     }
@@ -53,6 +56,7 @@ const MessageEditor = ({ isForThread }) => {
     }
     const res = await upload(formData);
     socket.emit(`${TYPES.MESSAGE}_${METHODS.CREATE}`, { ...message, files: res.data.payload.map((f) => f._id) });
+    setMessage({ ...initState, sender: user?._id, channelID });
   };
 
   const handleKeyDown = (e) => {
@@ -60,7 +64,6 @@ const MessageEditor = ({ isForThread }) => {
     if (e.code === "Enter") {
       e.preventDefault();
       createMessage();
-      setMessage({ ...initState, sender: user._id, channelID });
     }
   };
 
@@ -69,14 +72,14 @@ const MessageEditor = ({ isForThread }) => {
       ...msg,
       emoticons: msg.emoticons.find((emo) => emo.code === code)
         ? msg.emoticons.filter((emo) => emo.code !== code)
-        : [...msg.emoticons, { sender: user._id, code }],
+        : [...msg.emoticons, { sender: user?._id, code }],
     }));
   };
 
   const handleMentions = (user) => {
     setMessage((msg) => ({
       ...msg,
-      mentions: msg.mentions.find((m) => m === user._id) ? msg.mentions.filter((m) => m !== user._id) : [...msg.mentions, user._id],
+      mentions: msg.mentions.find((m) => m === user?._id) ? msg.mentions.filter((m) => m !== user?._id) : [...msg.mentions, user?._id],
     }));
   };
 
@@ -103,21 +106,11 @@ const MessageEditor = ({ isForThread }) => {
 
   const handleFiles = (e) => {
     setFiles(e.target.files);
-    console.log(files);
-
-    // const tmp = e.target.files[0];
-    // if (files.find((f) => f.name === tmp.name && f.size === tmp.size)) {
-    //   setFiles((files) => files.filter((f) => !(f.name === tmp.name && f.size === tmp.size)));
-    //   return;
-    // }
-    // setFiles([...files, tmp]);
   };
 
-  console.log(files);
-
   useEffect(() => {
-    if (user._id) setMessage((m) => ({ ...m, sender: user._id }));
-  }, [user._id]);
+    if (user?._id) setMessage((m) => ({ ...m, sender: user?._id }));
+  }, [user?._id]);
 
   useEffect(() => {
     if (channelID.length > 0) setMessage((m) => ({ ...m, channelID }));
@@ -128,8 +121,8 @@ const MessageEditor = ({ isForThread }) => {
   return (
     <VStack w={"full"} h={"full"} rounded={8} shadow={"0 0 3px black"}>
       <HStack w={"full"} h={"40px"} px={4} gap={2} bg={"#d7d5d596"} color={"gray"} pos={"relative"}>
-        <FaBold />
-        <FaItalic />
+        <FaBold cursor={"pointer"} onClick={() => setBold(!bold)} />
+        <FaItalic cursor={"pointer"} onClick={() => steItalic(!italic)} />
         {typingList.length > 0 && (
           <Text
             w={"full"}
@@ -147,7 +140,7 @@ const MessageEditor = ({ isForThread }) => {
             rounded={"8px"}
             px={2}
           >
-            {typingList.map((userId) => users.find((user) => user._id === userId)?.username).join(", ")} is typing...
+            {typingList.map((userId) => users.find((user) => user?._id === userId)?.username).join(", ")} is typing...
           </Text>
         )}
         <HStack gap={4}>
@@ -162,25 +155,28 @@ const MessageEditor = ({ isForThread }) => {
         <HStack w={"full"} pos={"relative"} onMouseLeave={() => setMentionShow(false)}>
           <VStack w={"80px"} pos={"absolute"} zIndex={5} rounded={"8px"} py={2} bg={"white"} shadow={"0 0 3px"} left={4} top={0}>
             {members.length &&
-              members?.map((m, i) => (
-                <Text
-                  key={i}
-                  w={"full"}
-                  p={1}
-                  maxH={"300px"}
-                  overflowY={"auto"}
-                  cursor={"pointer"}
-                  _hover={{ bg: "#e1dfdf8a" }}
-                  onClick={() => handleMentions(m)}
-                  overflow={"hidden"}
-                  textOverflow={"ellipsis"}
-                  whiteSpace={"nowrap"}
-                  fontWeight={"bold"}
-                  color={"var(--markUpColor)"}
-                >
-                  {m.username}
-                </Text>
-              ))}
+              members?.map(
+                (m, i) =>
+                  m._id !== user._id && (
+                    <Text
+                      key={i}
+                      w={"full"}
+                      p={1}
+                      maxH={"300px"}
+                      overflowY={"auto"}
+                      cursor={"pointer"}
+                      _hover={{ bg: "#e1dfdf8a" }}
+                      onClick={() => handleMentions(m)}
+                      overflow={"hidden"}
+                      textOverflow={"ellipsis"}
+                      whiteSpace={"nowrap"}
+                      fontWeight={"bold"}
+                      color={"var(--markUpColor)"}
+                    >
+                      {m.username}
+                    </Text>
+                  )
+              )}
           </VStack>
         </HStack>
       )}
@@ -189,6 +185,8 @@ const MessageEditor = ({ isForThread }) => {
           h={"full"}
           resize={"none"}
           border={"none"}
+          fontWeight={bold && "bold"}
+          fontStyle={italic && "italic"}
           _focus={{ outline: "none" }}
           onChange={changeContent}
           onKeyDown={handleKeyDown}
@@ -204,27 +202,19 @@ const MessageEditor = ({ isForThread }) => {
         <HStack gap={2} cursor={"pointer"}>
           <FormLabel>
             <Input type={"file"} display={"none"} onChange={handleFiles} multiple />
-            <FaPlus />
+            <FaPlus cursor={"pointer"} />
           </FormLabel>
           <HStack pos={"relative"} onMouseLeave={() => setEmoShow(false)}>
-            <FaRegSmile onClick={() => setEmoShow(!emoShow)} />
+            <FaRegSmile cursor={"pointer"} onClick={() => setEmoShow(!emoShow)} />
             {emoShow && <Emoticons w={"200px"} pos={"absolute"} bottom={"100%"} left={0} handleEmos={handleEmos} />}
           </HStack>
           <HStack>
-            {/* {files.length && <Text>{files.length} files</Text>}
-            {files.map((f, i) => (
-              <Text
-                key={i}
-                w={"100px"}
-                p={2}
-                textOverflow={"ellipsis"}
-                overflow={"hidden"}
-                whiteSpace={"nowrap"}
-                onClick={() => setFiles((files) => files.filter((file) => file.name !== f.name))}
-              >
-                {f.name}
+            {files.length && <Text>{files.length} files</Text>}
+            {Object.keys(files).map((key, i) => (
+              <Text key={i} w={"100px"} p={2} textOverflow={"ellipsis"} overflow={"hidden"} whiteSpace={"nowrap"}>
+                {files[key].name}
               </Text>
-            ))} */}
+            ))}
           </HStack>
         </HStack>
         <HStack>

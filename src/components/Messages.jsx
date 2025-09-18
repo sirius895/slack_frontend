@@ -126,7 +126,7 @@ const Messages = ({ channelId, messageId, ...props }) => {
         {typingList.length > 0 && (
           <Text fontSize="sm">
             {typingList.map(userId => {
-              const user = users.find(user => user._id == userId);
+              const user = users.find(user => user?._id == userId);
               return user?.username;
             }).join(', ')}
             {" "}is typing...

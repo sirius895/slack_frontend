@@ -29,7 +29,7 @@ const SignUp = () => {
     <VStack w={"full"} h={"100vh"} bg={"var(--mainColor)"} color={"white"} justify={"center"} align={"center"} px={4}>
       <VStack
         maxW={"480px"}
-        w={"100%"}
+        w={"90%"}
         h={"600px"}
         bg={"var(--secondaryColor)"}
         rounded={"24px"}

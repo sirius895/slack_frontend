@@ -15,7 +15,7 @@ const Message = ({ showDate, channelId, messageId, message }) => {
   const { socket } = useContext(SocketContext);
   const { users } = useUser();
   const [isEditing, setIsEditing] = useState(false);
-  const sender = useMemo(() => users.find(user => user._id == message.sender), [users, message]);
+  const sender = useMemo(() => users.find(user => user?._id == message.sender), [users, message]);
 
   const emoticons = useMemo(() => {
     return message.emoticons.reduce((prev, emoticon) => {

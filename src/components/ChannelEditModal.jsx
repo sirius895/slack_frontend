@@ -10,7 +10,7 @@ const ChannelEditModal = ({ channel, onClose, ...props }) => {
   const { socket } = useContext(SocketContext);
   const [channelName, setChannelName] = useState(channel.name);
   const [selectedUsers, setSelectedUsers] = useState(channel.members.reduce((prev, user) => {
-    prev[user._id] = true;
+    prev[user?._id] = true;
     return prev;
   }, {}));
   const [isEditingChannel, setIsEditingChannel] = useState(false);
@@ -86,15 +86,15 @@ const ChannelEditModal = ({ channel, onClose, ...props }) => {
             <VStack gap={1} align='stretch'>
               {users.map(user => (
                 <Flex
-                  key={user._id}
+                  key={user?._id}
                   p={1}
                   gap={2}
                   rounded={4}
                   cursor='pointer'
                   _hover={{ bg: '#0001' }}
-                  onClick={() => onSelectUser(user._id)}
+                  onClick={() => onSelectUser(user?._id)}
                 >
-                  <Checkbox isChecked={selectedUsers[user._id]} />
+                  <Checkbox isChecked={selectedUsers[user?._id]} />
                   {user.username}
                 </Flex>
               ))}
