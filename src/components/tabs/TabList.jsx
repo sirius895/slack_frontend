@@ -4,9 +4,12 @@ import { FaFile, FaRegCommentDots } from "react-icons/fa";
 import { AiFillPushpin } from "react-icons/ai";
 import { SocketContext } from "../../providers/SocketProvider";
 import { useParams } from "react-router-dom";
+import UserAvatar from "../common/UserAvatar";
+import { AuthContext } from "../../providers/AuthProvider";
 
 const TabList = (props) => {
   const { curTab, setCurTab } = props;
+  const { user } = useContext(AuthContext);
   const { channels, messages } = useContext(SocketContext);
   const { channel } = useParams();
   const [curChannel, setCurChannel] = useState({});
@@ -27,9 +30,12 @@ const TabList = (props) => {
         <Text fontSize={"20px"} fontWeight={"extrabold"}>
           # {curChannel?.name}
         </Text>
-        <HStack gap={4}>
-          <Avatar size={"sm"}></Avatar>
-          <Text>+{curChannel?.members?.length}</Text>
+        <HStack gap={2}>
+          <UserAvatar url={user.avatar} w={"32px"} h={"32px"}></UserAvatar>
+          <Text fontWeight={"extrabold"} fontFamily={"cursive"} color={"var(--mainColor)"}>
+            {user?.username?.toUpperCase()}
+          </Text>
+          <Text>{curChannel?.members?.length ? `+${curChannel?.members?.length - 1}` : ""}</Text>
         </HStack>
       </HStack>
       <HStack w={"full"} flexGrow={1}>

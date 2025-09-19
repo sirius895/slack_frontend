@@ -63,7 +63,7 @@ const SideBar = () => {
         );
       })}
       <HStack pos={"relative"} onMouseOver={() => setShowStateBar(true)} onMouseLeave={() => setShowStateBar(false)}>
-        <UserAvatar w={"40px"} h={"40px"} state={user?.state} showState={true} borderColor={"var(--mainColor)"} />
+        <UserAvatar w={"40px"} h={"40px"} url={user?.avatar} state={user?.state} showState={true} borderColor={"var(--mainColor)"} />
         {showStateBar && (
           <VStack w={"120px"} rounded={8} pos={"absolute"} py={2} bottom={"100%"} left={0} bg={"var(--mainColor)"} shadow={"0 0 3px black"}>
             {states.map((s, i) => {

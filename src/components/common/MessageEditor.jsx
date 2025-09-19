@@ -8,6 +8,7 @@ import { AuthContext } from "../../providers/AuthProvider";
 import { SocketContext } from "../../providers/SocketProvider";
 import Emoticon from "./Emoticon";
 import Emoticons from "./Emoticons";
+import toast from "../../utils/toast";
 
 const MessageEditor = ({ isForThread }) => {
   const { user } = useContext(AuthContext);
@@ -61,8 +62,13 @@ const MessageEditor = ({ isForThread }) => {
 
   const handleKeyDown = (e) => {
     if (messageID.length > 1 && isForThread) socket.emit(`${TYPES.TYPING}`, { channelID, messageID });
+    if (e.code === "Escape") setMentionShow(false);
     if (e.code === "Enter") {
       e.preventDefault();
+      if (channelID.length < 10) {
+        toast.ERROR("Please choose a channel!");
+        return;
+      }
       createMessage();
     }
   };
@@ -128,7 +134,6 @@ const MessageEditor = ({ isForThread }) => {
             w={"full"}
             fontWeight={"bold"}
             fontSize="16px"
-            color={""}
             textOverflow={"ellipsis"}
             whiteSpace={"nowrap"}
             overflow={"hidden"}
@@ -154,7 +159,7 @@ const MessageEditor = ({ isForThread }) => {
       {!isForThread && mentionShow && (
         <HStack w={"full"} pos={"relative"} onMouseLeave={() => setMentionShow(false)}>
           <VStack w={"80px"} pos={"absolute"} zIndex={5} rounded={"8px"} py={2} bg={"white"} shadow={"0 0 3px"} left={4} top={0}>
-            {members.length &&
+            {members.length ? (
               members?.map(
                 (m, i) =>
                   m._id !== user._id && (
@@ -176,7 +181,10 @@ const MessageEditor = ({ isForThread }) => {
                       {m.username}
                     </Text>
                   )
-              )}
+              )
+            ) : (
+              <Text>No user</Text>
+            )}
           </VStack>
         </HStack>
       )}

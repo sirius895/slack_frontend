@@ -4,6 +4,9 @@ import { FaCheck } from "react-icons/fa";
 import { METHODS, TYPES } from "../../constants/chat";
 import { AuthContext } from "../../providers/AuthProvider";
 import { SocketContext } from "../../providers/SocketProvider";
+import { createChannelValidator } from "../../libs/validators";
+import toast from "../../utils/toast";
+import UserAvatar from "../common/UserAvatar";
 
 const DMModal = (props) => {
   const { isChannel, selectedID, setSelectedID, modalStatus, setModalStatus } = props;
@@ -23,6 +26,11 @@ const DMModal = (props) => {
   };
 
   const handleCreate = () => {
+    const err = createChannelValidator(channel);
+    if (err) {
+      toast.ERROR(err);
+      return;
+    }
     socket.emit(`${TYPES.CHANNEL}_${METHODS.CREATE}`, { ...channel, creator: user?._id });
     handleCancel();
   };
@@ -62,22 +70,32 @@ const DMModal = (props) => {
   return (
     <Modal isOpen={modalStatus === "add" || modalStatus === "edit"} isCentered>
       <ModalOverlay />
-      <ModalContent w={"full"} h="90%" maxH={"560px"} alignItems={"center"} justifyContent={"center"}>
-        <ModalHeader display={"flex"} w={"full"} alignItems={"center"} justifyContent={"center"}>
+      <ModalContent w={"full"} h="90%" maxH={"560px"} bg={"var(--secondaryColor)"} color={"white"} alignItems={"center"} justifyContent={"center"}>
+        <ModalHeader fontSize={"28px"} display={"flex"} w={"full"} alignItems={"center"} justifyContent={"center"}>
           Invite
         </ModalHeader>
         <ModalBody display={"flex"} flexGrow={"1"} overflowY={"auto"} flexDir={"column"} paddingInline={4} w={"full"} gap={4}>
           <HStack w={"full"} h={"40px"}>
-            <Input w={"full"} placeholder="Search Users" value={keyword} onChange={(e) => setKeyword(e.target.value)} />
+            <Input w={"full"} borderColor={"var(--fontColor)"} placeholder="Search Users" value={keyword} onChange={(e) => setKeyword(e.target.value)} />
           </HStack>
-          <VStack w={"full"} border={"1px solid #e2e8f0"} flexGrow={1} rounded={"8px"} overflowY={"auto"}>
+          <VStack w={"full"} border={"1px solid var(--fontColor)"} flexGrow={1} rounded={"8px"} overflowY={"auto"}>
             {tmp.map((u, i) => {
               return (
                 u._id !== user?._id && (
-                  <HStack key={i} w={"full"} cursor={"pointer"} onClick={() => changeMembers(u)} paddingInline={4} paddingBlock={2} justify={"space-between"}>
+                  <HStack
+                    key={i}
+                    w={"full"}
+                    backgroundColor={channel?.members?.includes(u._id) && "var(--mainColor)"}
+                    _hover={{ backgroundColor: "var(--mainColor)" }}
+                    cursor={"pointer"}
+                    onClick={() => changeMembers(u)}
+                    paddingInline={4}
+                    paddingBlock={2}
+                    justify={"space-between"}
+                  >
                     <HStack gap={4}>
-                      <Avatar w={"32px"} h={"32px"} />
-                      <Text>{u.username}</Text>
+                      <UserAvatar url={u?.avatar} w={"32px"} h={"32px"} />
+                      <Text>{u?.username}</Text>
                     </HStack>
                     {channel.members.includes(u._id) && <FaCheck />}
                   </HStack>
@@ -87,10 +105,16 @@ const DMModal = (props) => {
           </VStack>
         </ModalBody>
         <ModalFooter w={"full"} justifyContent={"space-between"}>
-          <Button onClick={(modalStatus === "add" && handleCreate) || (modalStatus === "edit" && handleUpdate)}>
+          <Button
+            bg={"var(--mainColor)"}
+            _hover={{ boxShadow: "0 0 4px black" }}
+            onClick={(modalStatus === "add" && handleCreate) || (modalStatus === "edit" && handleUpdate)}
+          >
             {(modalStatus === "add" && `Create`) || (modalStatus === "edit" && `Update`)}
           </Button>
-          <Button onClick={handleCancel}>Cancel</Button>
+          <Button bg={"var(--mainColor)"} _hover={{ boxShadow: "0 0 4px black" }} onClick={handleCancel}>
+            Cancel
+          </Button>
         </ModalFooter>
       </ModalContent>
     </Modal>

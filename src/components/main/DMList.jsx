@@ -92,11 +92,12 @@ const DMList = () => {
                     <UserAvatar
                       w={"28px"}
                       h={"28px"}
+                      url={users.find((u) => u._id === channel?.members?.find((m) => m !== user?._id))?.avatar}
                       borderColor={"var(--secondaryColor)"}
                       showState={true}
-                      state={users.find((u) => u._id === channel.members.find((m) => m !== user?._id)).state}
+                      state={users.find((u) => u._id === channel?.members?.find((m) => m !== user?._id))?.state}
                     />
-                    <Text>{users.find((u) => u._id === channel.members.find((m) => m !== user?._id)).username.toUpperCase()}</Text>
+                    <Text>{users.find((u) => u._id === channel?.members?.find((m) => m !== user?._id))?.username?.toUpperCase()}</Text>
                   </HStack>
                   <HStack gap={2}>
                     {channel.creator === user?._id && (

@@ -12,6 +12,7 @@ import Emoticon from "./Emoticon";
 import Emoticons from "./Emoticons";
 import FileMark from "./FileMark";
 import UserAvatar from "./UserAvatar";
+import { useNavigate, useParams } from "react-router-dom";
 
 const Message = (props) => {
   const { message, ...etcProps } = props;
@@ -19,6 +20,8 @@ const Message = (props) => {
   const { socket, showThread, setShowThread, users, curChannel } = useContext(SocketContext);
   const [toolShow, setToolShow] = useState(false);
   const [emoShow, setEmoShow] = useState(false);
+  const navigate = useNavigate();
+  const { channel: channelID, message: messageID } = useParams();
 
   // handle delete message
   const handleDelete = (_id) => {
@@ -67,9 +70,9 @@ const Message = (props) => {
         onMouseLeave={() => setToolShow(false)}
         position="relative"
         gap={4}
+        flexWrap={"wrap"}
       >
-        <UserAvatar />
-
+        <UserAvatar url={message.sender.avatar} />
         <VStack flex="1" align="stretch" spacing={3}>
           <Flex align="center" justify="space-between" flexWrap="wrap" gap={2} fontSize={useBreakpointValue({ base: "sm", md: "md" })}>
             <Text fontWeight="bold" color={"var(--mainColor)"} isTruncated maxW="70%">
@@ -149,6 +152,7 @@ const Message = (props) => {
                 cursor="pointer"
                 onClick={() => {
                   setShowThread(!showThread);
+                  navigate(`/chatting/home/${channelID}/${message._id}`);
                 }}
                 title="Reply"
               >

@@ -1,10 +1,15 @@
 import api from "../libs/axios";
 import toast from "../utils/toast";
 import resState from "../constants/resState";
-import { signUpValidator } from "../libs/validators";
+import { signInValidator, signUpValidator } from "../libs/validators";
 
 export const signIn = async (data, navigate) => {
   try {
+    const err = signInValidator(data);
+    if (err) {
+      toast.ERROR(err);
+      return;
+    }
     const res = await api.post("/auth/signin", data);
     const status = res.data.status;
     const message = res.data.message;

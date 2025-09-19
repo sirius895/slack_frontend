@@ -44,7 +44,7 @@ const Files = () => {
           ))}
         </HStack>
       ) : (
-        <Text>No Pdfs</Text>
+        <Text>No PDF</Text>
       )}
     </VStack>
   );
