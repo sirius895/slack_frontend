@@ -19,18 +19,22 @@ const FileMark = (props) => {
       <Link href={linkURL} target="_blank" title="preview">
         <Image src={previewURL} w={w} h={h} rounded={"8px"} {...etcProps} _focus={{ outline: "none" }} />
       </Link>
-      <HStack pos={"absolute"} w={"40px"} h={"40px"} top={"-20px"} right={"-20px"} onMouseLeave={() => setDownloadShow(false)} onMouseOver={() => setDownloadShow(true)}>
+      <HStack
+        pos={"absolute"}
+        w={"40px"}
+        h={"40px"}
+        zIndex={4}
+        top={"-20px"}
+        right={"-20px"}
+        onMouseLeave={() => setDownloadShow(false)}
+        onMouseOver={() => setDownloadShow(true)}
+      >
         {downloadShow && (
           <Link href={down ? downloadURL : "#"} bg={"white"} rounded={"8px"} p={2} _hover={{ shadow: "0 0 4px" }} onClick={() => setDown(true)}>
             {<FaDownload color={"var(--mainColor)"} />}
           </Link>
         )}
       </HStack>
-      {/* <HStack w={"full"} justify={"center"} align={"center"}>
-        <Link href={downloadURL}>
-          <FaDownload color={"var(--secondaryColor)"} />
-        </Link>
-      </HStack> */}
     </VStack>
   );
 };

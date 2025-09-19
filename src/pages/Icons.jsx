@@ -6,7 +6,7 @@ const Icons = () => {
     <HStack flexWrap={"wrap"} gap={4}>
       {Object.keys(FaIcons).map((v, i) => {
         return (
-          <HStack key={i} w={"300px"}>
+          <HStack key={i} w={"300px"} pl={4}>
             <Text>{v}</Text>
             {FaIcons[v]({})}
           </HStack>

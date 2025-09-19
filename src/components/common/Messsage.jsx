@@ -117,7 +117,7 @@ const Message = (props) => {
             )}
             <VStack minW={"28px"}>
               {message?.pinnedBy?.includes(user?._id) && (
-                <Box display={pinDisplay} color="#ffcc00" fontSize="20px" title="Pinned" marginLeft={2}>
+                <Box display={pinDisplay} color="var(--mainColor)" fontSize="24px" title="Pinned" marginLeft={2}>
                   <AiFillPushpin />
                 </Box>
               )}
