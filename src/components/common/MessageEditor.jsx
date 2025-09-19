@@ -1,4 +1,4 @@
-import { FormLabel, HStack, Input, Text, Textarea, VStack } from "@chakra-ui/react";
+import { Box, FormLabel, HStack, Input, Text, Textarea, VStack } from "@chakra-ui/react";
 import { useContext, useEffect, useMemo, useRef, useState } from "react";
 import { FaBold, FaItalic, FaPaperPlane, FaPlus, FaRegSmile } from "react-icons/fa";
 import { useParams } from "react-router-dom";
@@ -210,7 +210,9 @@ const MessageEditor = ({ isForThread }) => {
         <HStack gap={2} cursor={"pointer"}>
           <FormLabel>
             <Input type={"file"} display={"none"} onChange={handleFiles} multiple />
-            <FaPlus cursor={"pointer"} />
+            <Box>
+              <FaPlus cursor={"pointer"} />
+            </Box>
           </FormLabel>
           <HStack pos={"relative"} onMouseLeave={() => setEmoShow(false)}>
             <FaRegSmile cursor={"pointer"} onClick={() => setEmoShow(!emoShow)} />
