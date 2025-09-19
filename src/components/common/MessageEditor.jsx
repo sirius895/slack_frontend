@@ -124,12 +124,13 @@ const MessageEditor = ({ isForThread }) => {
     socket.on(TYPES.TYPING, listenTyping);
     return () => socket.removeListener(TYPES.TYPING, listenTyping);
   }, [channelID]);
-  
+
   const removeFile = (index) => {
     const temp = [...files];
     temp.splice(index, 1);
     setFiles(temp);
   };
+  
   return (
     <VStack w={"full"} h={"full"} rounded={8} shadow={"0 0 3px black"}>
       <HStack w={"full"} h={"40px"} px={4} gap={2} bg={"#d7d5d596"} color={"gray"} pos={"relative"}>
