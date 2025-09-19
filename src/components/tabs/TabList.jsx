@@ -1,16 +1,16 @@
-import { VStack, HStack, Text, Avatar, Badge } from "@chakra-ui/react";
+import { HStack, Text, useBreakpoint, useBreakpointValue, VStack } from "@chakra-ui/react";
 import { useContext, useEffect, useState } from "react";
-import { FaFile, FaRegCommentDots } from "react-icons/fa";
 import { AiFillPushpin } from "react-icons/ai";
-import { SocketContext } from "../../providers/SocketProvider";
+import { FaFile, FaRegCommentDots } from "react-icons/fa";
 import { useParams } from "react-router-dom";
-import UserAvatar from "../common/UserAvatar";
 import { AuthContext } from "../../providers/AuthProvider";
+import { SocketContext } from "../../providers/SocketProvider";
+import UserAvatar from "../common/UserAvatar";
 
 const TabList = (props) => {
   const { curTab, setCurTab } = props;
   const { user } = useContext(AuthContext);
-  const { channels, messages } = useContext(SocketContext);
+  const { channels } = useContext(SocketContext);
   const { channel } = useParams();
   const [curChannel, setCurChannel] = useState({});
 
@@ -23,12 +23,12 @@ const TabList = (props) => {
     { label: "Pins", key: "pins", icon: <AiFillPushpin /> },
     { label: "Files", key: "files", icon: <FaFile /> },
   ];
-
+  const titleWidth = useBreakpointValue({ base: "300px", md: "200px" });
   return (
     <VStack w={"full"} h={"100px"} px={4} pt={4} shadow={"0 0 4px black"}>
       <HStack w={"full"} justify={"space-between"}>
-        <Text fontSize={"20px"} fontWeight={"extrabold"}>
-          # {curChannel?.name}
+        <Text width={titleWidth} textOverflow={"ellipsis"} whiteSpace={"nowrap"} overflow={"hidden"} fontSize={"20px"} fontWeight={"extrabold"}>
+          # {curChannel?.isChannel && curChannel?.name}
         </Text>
         <HStack gap={2}>
           <UserAvatar url={user.avatar} w={"32px"} h={"32px"}></UserAvatar>
@@ -47,7 +47,7 @@ const TabList = (props) => {
               px={4}
               pt={4}
               pb={2}
-              fontSize={curTab === t.key && "18px"}
+              color={curTab === t.key && "var(--mainColor)"}
               cursor={"pointer"}
               transition={"0.2s ease"}
               onClick={(e) => setCurTab(t.key)}

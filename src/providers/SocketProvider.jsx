@@ -51,6 +51,7 @@ const SocketProvider = ({ children }) => {
   const listenChannelReadByUserID = (status, data) => {
     if (status && data) {
       setChannels(data);
+      setCurChannel(data.find((ch) => ch?._id === channel));
     } else toast.ERROR(data.message);
   };
 
@@ -75,7 +76,7 @@ const SocketProvider = ({ children }) => {
   useEffect(() => {
     if (user?._id) {
       socket.emit(TYPES.AUTH, token);
-      // socket.emit(`${TYPES.AUTH}_${METHODS.UPDATE}`, { state: 3 });
+      socket.emit(`${TYPES.AUTH}_${METHODS.UPDATE}`, { state: user.state });
       socket.emit(`${TYPES.CHANNEL}_${METHODS.READ_BY_USER_ID}`, user?._id);
       socket.on(`${TYPES.CHANNEL}_${METHODS.READ_BY_USER_ID}`, listenChannelReadByUserID);
     }
@@ -101,7 +102,7 @@ const SocketProvider = ({ children }) => {
   }, [channel]);
 
   useEffect(() => {
-    message.length > 10 && setShowThread(true);
+    setShowThread(message.length > 10 ? true : false);
   }, []);
 
   return (

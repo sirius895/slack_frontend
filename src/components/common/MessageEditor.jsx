@@ -1,4 +1,4 @@
-import { Box, FormLabel, HStack, Input, Text, Textarea, transform, VStack } from "@chakra-ui/react";
+import { Box, Fade, FormLabel, HStack, Input, Spinner, Text, Textarea, transform, VStack } from "@chakra-ui/react";
 import { useContext, useEffect, useMemo, useRef, useState } from "react";
 import { FaBold, FaItalic, FaPaperPlane, FaPlus, FaRegSmile } from "react-icons/fa";
 import { useParams } from "react-router-dom";
@@ -12,7 +12,7 @@ import toast from "../../utils/toast";
 
 const MessageEditor = ({ isForThread }) => {
   const { user } = useContext(AuthContext);
-  const { socket, users, channels } = useContext(SocketContext);
+  const { socket, users, channels, curChannel } = useContext(SocketContext);
   const { channel: channelID, message: messageID } = useParams();
   const [emoShow, setEmoShow] = useState(false);
   const [typingList, setTypingList] = useState([]);
@@ -20,6 +20,8 @@ const MessageEditor = ({ isForThread }) => {
   const [mentionShow, setMentionShow] = useState(false);
   const [bold, setBold] = useState(false);
   const [italic, steItalic] = useState(false);
+  const [fileListShow, setFileListShow] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
 
   const members = useMemo(() => {
     const memberIDs = channels.find((c) => c._id === channelID)?.members;
@@ -51,14 +53,19 @@ const MessageEditor = ({ isForThread }) => {
   };
 
   const createMessage = async () => {
-    const formData = new FormData();
-    for (let i = 0; i < files.length; i++) {
-      formData.append("files", files[i]);
+    try {
+      const formData = new FormData();
+      for (let i = 0; i < files.length; i++) {
+        formData.append("files", files[i]);
+      }
+      const res = await upload(formData, setUploadProgress);
+      socket.emit(`${TYPES.MESSAGE}_${METHODS.CREATE}`, { ...message, files: res.data.payload.map((f) => f._id) });
+      setMessage({ ...initState, sender: user?._id, channelID });
+    } catch (error) {
+      toast("Upload failed. Try again.");
     }
-    const res = await upload(formData);
-    socket.emit(`${TYPES.MESSAGE}_${METHODS.CREATE}`, { ...message, files: res.data.payload.map((f) => f._id) });
-    setMessage({ ...initState, sender: user?._id, channelID });
     setFiles({});
+    setUploadProgress(0);
   };
 
   const handleKeyDown = (e) => {
@@ -130,7 +137,10 @@ const MessageEditor = ({ isForThread }) => {
     temp.splice(index, 1);
     setFiles(temp);
   };
-  
+  const removeMention = (_id) => {
+    setMessage({ ...message, mentions: message.mentions.filter((m) => m._id !== _id) });
+  };
+
   return (
     <VStack w={"full"} h={"full"} rounded={8} shadow={"0 0 3px black"}>
       <HStack w={"full"} h={"40px"} px={4} gap={2} bg={"#d7d5d596"} color={"gray"} pos={"relative"}>
@@ -157,7 +167,7 @@ const MessageEditor = ({ isForThread }) => {
         )}
         <HStack gap={4}>
           {message.mentions.map((m, i) => (
-            <Text key={i} fontFamily={"cursive"} fontWeight={"bold"} color={"var(--markUpColor)"}>
+            <Text key={i} fontFamily={"cursive"} fontWeight={"bold"} color={"var(--markUpColor)"} cursor={"pointer"} onClick={() => removeMention(m._id)}>
               @{users?.find((u) => u._id === m)?.username}
             </Text>
           ))}
@@ -206,6 +216,7 @@ const MessageEditor = ({ isForThread }) => {
           onChange={changeContent}
           onKeyDown={handleKeyDown}
           value={message.content}
+          placeholder={`To ${curChannel?._id && !curChannel?.isChannel ? users?.find((u) => u?._id === curChannel?.members[1])?.username : curChannel?.name}`}
         />
       </VStack>
       <HStack w={"full"} px={4} h={"32px"}>
@@ -217,21 +228,44 @@ const MessageEditor = ({ isForThread }) => {
         <HStack gap={2} cursor={"pointer"}>
           <FormLabel>
             <Input type={"file"} display={"none"} onChange={handleFiles} multiple />
-            <Box _hover={{ transform: "scale(1.6)" }}>
+            <Box _hover={{ transform: "scale(1.2)" }}>
               <FaPlus cursor={"pointer"} />
             </Box>
           </FormLabel>
           <HStack pos={"relative"} onMouseLeave={() => setEmoShow(false)}>
             <FaRegSmile cursor={"pointer"} onClick={() => setEmoShow(!emoShow)} />
-            {emoShow && <Emoticons w={"200px"} pos={"absolute"} bottom={"100%"} left={0} handleEmos={handleEmos} />}
+            {emoShow && <Emoticons w={"300px"} pos={"absolute"} bottom={"100%"} left={0} handleEmos={handleEmos} />}
           </HStack>
-          <HStack>
-            {files.length && <Text>{files.length} files</Text>}
-            {Object.keys(files).map((key, i) => (
-              <Text key={i} w={"100px"} p={2} onClick={() => removeFile(i)} textOverflow={"ellipsis"} overflow={"hidden"} whiteSpace={"nowrap"}>
-                {files[key].name}
-              </Text>
-            ))}
+          <HStack pos={"relative"}>
+            {files.length && (
+              <Box onClick={() => setFileListShow(!fileListShow)}>
+                <Text>
+                  {files.length} file{files.length ? "s" : ""}
+                </Text>
+              </Box>
+            )}
+            {uploadProgress && uploadProgress < 100 && <Spinner label="upoloading" color="var(--mainColor)" />}
+            <Text>{uploadProgress ? `${uploadProgress}%` : null}</Text>
+            <VStack
+              h={"120px"}
+              pos={"absolute"}
+              bg={"white"}
+              overflowX={"hidden"}
+              shadow={"0 0 4px"}
+              rounded={"8px"}
+              bottom={0}
+              left={0}
+              onMouseLeave={() => setFileListShow(false)}
+            >
+              {fileListShow &&
+                Object.keys(files).map((key, i) => (
+                  <HStack key={i} h={"40px"} w={"100px"}>
+                    <Text w={"100px"} p={2} onClick={() => removeFile(i)} textOverflow={"ellipsis"} overflow={"hidden"} whiteSpace={"nowrap"}>
+                      {files[key].name}
+                    </Text>
+                  </HStack>
+                ))}
+            </VStack>
           </HStack>
         </HStack>
         <HStack>

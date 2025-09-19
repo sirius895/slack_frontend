@@ -1,5 +1,5 @@
-import { HStack, Text, VStack } from "@chakra-ui/react";
-import { useCallback, useContext, useEffect, useRef, useState } from "react";
+import { Divider, HStack, Spinner, Text, VStack } from "@chakra-ui/react";
+import { useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 import { FaTimes } from "react-icons/fa";
 import { useParams } from "react-router-dom";
 import { METHODS, TYPES } from "../../constants/chat";
@@ -10,11 +10,12 @@ import Message from "../common/Messsage";
 import { AuthContext } from "../../providers/AuthProvider";
 
 const Thread = () => {
-  const { setShowThread, socket } = useContext(SocketContext);
+  const { setShowThread, socket, messages: _messages } = useContext(SocketContext);
   const { user } = useContext(AuthContext);
   const [messages, setMessages] = useState([]);
   const { message } = useParams();
   const messageRef = useRef(null);
+  const parentMessage = useMemo(() => _messages.find((m) => m._id === message), [messages]);
 
   const listenMessageReadByParentID = (status, data) => {
     if (status && data) setMessages(data);
@@ -88,13 +89,24 @@ const Thread = () => {
       </VStack>
       <VStack w={"full"} flex={"1 1 0"} py={4}>
         <VStack w={"full"} p={4} flex={"1 1 0"} overflowY={"auto"} scrollBehavior={"smooth"} gap={4}>
-          <VStack w={"full"} ref={messageRef} gap={8}>
-            {messages.length &&
-              messages.map((m, i) => (
-                <HStack w={"full"} key={i} justify={m.sender._id !== user?._id && "flex-end"}>
-                  <Message message={m} w={"88%"} maxW={"300px"} />
-                </HStack>
-              ))}
+          <VStack w={"full"} ref={messageRef} gap={4}>
+            {messages ? (
+              <>
+                <Message message={parentMessage} />
+                <Divider />
+                {messages.length ? (
+                  messages.map((m, i) => (
+                    <HStack w={"full"} key={i} justify={m.sender._id !== user?._id && "flex-end"}>
+                      <Message message={m} w={"100%"} maxW={"300px"} />
+                    </HStack>
+                  ))
+                ) : (
+                  <Text>No Thread</Text>
+                )}
+              </>
+            ) : (
+              <Spinner />
+            )}
           </VStack>
         </VStack>
         <VStack w={"full"} h={"180px"} max={"180px"} px={4}>
