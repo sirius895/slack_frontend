@@ -1,4 +1,4 @@
-import { Box, FormLabel, HStack, Input, Text, Textarea, VStack } from "@chakra-ui/react";
+import { Box, FormLabel, HStack, Input, Text, Textarea, transform, VStack } from "@chakra-ui/react";
 import { useContext, useEffect, useMemo, useRef, useState } from "react";
 import { FaBold, FaItalic, FaPaperPlane, FaPlus, FaRegSmile } from "react-icons/fa";
 import { useParams } from "react-router-dom";
@@ -25,7 +25,7 @@ const MessageEditor = ({ isForThread }) => {
     const memberIDs = channels.find((c) => c._id === channelID)?.members;
     return users.filter((u) => memberIDs?.includes(u._id));
   }, [channelID, channels, users]);
-  const [files, setFiles] = useState([]);
+  const [files, setFiles] = useState({});
 
   const initState = {
     sender: "",
@@ -58,6 +58,7 @@ const MessageEditor = ({ isForThread }) => {
     const res = await upload(formData);
     socket.emit(`${TYPES.MESSAGE}_${METHODS.CREATE}`, { ...message, files: res.data.payload.map((f) => f._id) });
     setMessage({ ...initState, sender: user?._id, channelID });
+    setFiles({});
   };
 
   const handleKeyDown = (e) => {
@@ -123,7 +124,12 @@ const MessageEditor = ({ isForThread }) => {
     socket.on(TYPES.TYPING, listenTyping);
     return () => socket.removeListener(TYPES.TYPING, listenTyping);
   }, [channelID]);
-
+  
+  const removeFile = (index) => {
+    const temp = [...files];
+    temp.splice(index, 1);
+    setFiles(temp);
+  };
   return (
     <VStack w={"full"} h={"full"} rounded={8} shadow={"0 0 3px black"}>
       <HStack w={"full"} h={"40px"} px={4} gap={2} bg={"#d7d5d596"} color={"gray"} pos={"relative"}>
@@ -210,7 +216,7 @@ const MessageEditor = ({ isForThread }) => {
         <HStack gap={2} cursor={"pointer"}>
           <FormLabel>
             <Input type={"file"} display={"none"} onChange={handleFiles} multiple />
-            <Box>
+            <Box _hover={{ transform: "scale(1.6)" }}>
               <FaPlus cursor={"pointer"} />
             </Box>
           </FormLabel>
@@ -221,7 +227,7 @@ const MessageEditor = ({ isForThread }) => {
           <HStack>
             {files.length && <Text>{files.length} files</Text>}
             {Object.keys(files).map((key, i) => (
-              <Text key={i} w={"100px"} p={2} textOverflow={"ellipsis"} overflow={"hidden"} whiteSpace={"nowrap"}>
+              <Text key={i} w={"100px"} p={2} onClick={() => removeFile(i)} textOverflow={"ellipsis"} overflow={"hidden"} whiteSpace={"nowrap"}>
                 {files[key].name}
               </Text>
             ))}
