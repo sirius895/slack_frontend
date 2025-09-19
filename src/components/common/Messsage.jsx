@@ -61,7 +61,7 @@ const Message = (props) => {
   const pinDisplay = useBreakpointValue({ base: "none", md: "block" });
 
   return (
-    <VStack w="full" maxW={maxW} align="stretch" bg="#f0f0f0" borderRadius="12px" p={4} boxShadow="sm" pos="relative" spacing={3} {...etcProps}>
+    <VStack w="full" maxW={maxW} align="stretch" shadow={"0 0 4px black"} bg="#f0f0f0" borderRadius="12px" p={4} pos="relative" spacing={3} {...etcProps}>
       <HStack
         w="full"
         spacing={spacing}
@@ -69,13 +69,13 @@ const Message = (props) => {
         onMouseEnter={() => setToolShow(true)}
         onMouseLeave={() => setToolShow(false)}
         position="relative"
-        gap={4}
+        gap={8}
         flexWrap={"wrap"}
       >
-        <UserAvatar url={message.sender.avatar} />
-        <VStack flex="1" align="stretch" spacing={3}>
+        <UserAvatar w={"72px"} h={"72px"} url={message.sender.avatar} />
+        <VStack flex="1" align="stretch" gap={2}>
           <Flex align="center" justify="space-between" flexWrap="wrap" gap={2} fontSize={useBreakpointValue({ base: "sm", md: "md" })}>
-            <Text fontWeight="bold" color={"var(--mainColor)"} isTruncated maxW="70%">
+            <Text fontWeight="bold" fontSize={"24px"} color={"var(--mainColor)"} isTruncated maxW="70%">
               {message.sender?.username.toUpperCase() || "Unknown"}
             </Text>
             <Text flexShrink={0} color="#555" whiteSpace="nowrap">
@@ -87,27 +87,27 @@ const Message = (props) => {
               {message.mentions.map((m) => {
                 const user = users.find((u) => u._id === m);
                 return (
-                  <Text key={m} fontWeight="bold" color="#0066cc">
-                    @{user?.username || "unknown"}
+                  <Text key={m} fontSize={"20px"} fontWeight="bold" color="#0066cc">
+                    @{user?.username || "Unknown"}
                   </Text>
                 );
               })}
             </HStack>
           )}
-          <Text fontSize={useBreakpointValue({ base: "md", md: "lg" })} whiteSpace="pre-line" wordBreak="break-word" color="#222">
+          <Text fontSize={useBreakpointValue({ base: "md", md: "lg" })} fontFamily={"cursive"} whiteSpace="pre-line" wordBreak="break-word" color="#222">
             {message.content}
           </Text>
           <HStack flexWrap="wrap" gap={1} mt={2}>
             {emoticons.map((emo, i) => (
               <HStack key={i} align="center" fontSize="xs">
-                <Emoticon id={emo.code} onClick={() => handleEmos(emo.code)} />
+                <Emoticon id={emo.code} fontSize={"24px"} onClick={() => handleEmos(emo.code)} />
                 <Text fontSize="xs" color="#555">
                   {emo.users.length}
                 </Text>
               </HStack>
             ))}
           </HStack>
-          <HStack w={"full"} flex={"1 1 0"} justify={"flex-end"} gap={4}>
+          <HStack w={"full"} justify={"flex-end"} gap={4}>
             {message.files.length > 0 && (
               <HStack gap={2} mt={2} flexWrap="wrap" justify={"flex-end"}>
                 {message.files.map((f, i) => (
@@ -140,11 +140,22 @@ const Message = (props) => {
             alignItems="center"
             flexWrap="wrap"
             maxW="300px"
+            onMouseLeave={() => setEmoShow(false)}
           >
-            <Box cursor="pointer" onClick={() => setEmoShow(!emoShow)} onMouseLeave={() => setEmoShow(false)} title="Add Emoji">
+            <Box cursor="pointer" onClick={() => setEmoShow(!emoShow)} title="Add Emoji">
               <FaRegSmile color={"ffcc00"} size={20} />
               {emoShow && (
-                <Emoticons pos={"absolute"} top="100%" right={0} bg="#fff" p={2} borderRadius="4px" boxShadow="md" maxW="250px" handleEmos={handleEmos} />
+                <Emoticons
+                  pos={"absolute"}
+                  top="100%"
+                  right={0}
+                  bg="#fff"
+                  p={2}
+                  borderRadius="4px"
+                  boxShadow={"0 0 4px black"}
+                  maxW="250px"
+                  handleEmos={handleEmos}
+                />
               )}
             </Box>
             {!message.parentID && curChannel.isChannel && (
@@ -160,7 +171,7 @@ const Message = (props) => {
               </Box>
             )}
             <Box cursor="pointer" onClick={handlePin} title="Pin/Unpin">
-              <AiFillPushpin size={20} />
+              <AiFillPushpin size={20} color={"var(--mainColor)"} />
             </Box>
             {message.sender._id === user?._id && (
               <Box cursor="pointer" onClick={() => handleDelete(message._id)} title="Delete">

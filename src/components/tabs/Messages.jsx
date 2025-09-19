@@ -27,7 +27,7 @@ const Messages = () => {
       if (status && data && data.channelID === channel && !data.parentID) setMessages((msgs) => msgs.map((msg) => (msg._id === data._id ? data : msg)));
       else toast.ERROR(data.message);
     },
-    [setMessages]
+    [messages, setMessages]
   );
 
   const listenMessageDelete = useCallback(
@@ -35,7 +35,7 @@ const Messages = () => {
       if (status && data && data.channelID === channel && !data.parentID) setMessages((msgs) => msgs.filter((m) => m._id !== data._id));
       else toast.ERROR(data.message);
     },
-    [setMessages]
+    [messages, setMessages]
   );
 
   useEffect(() => {

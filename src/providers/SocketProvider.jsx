@@ -31,7 +31,6 @@ const SocketProvider = ({ children }) => {
   const { user } = useContext(AuthContext);
   const { channel, message } = useParams();
   const [showThread, setShowThread] = useState(false);
-  const navigate = useNavigate();
 
   const socket = useMemo(
     () => io(`${process.env.REACT_APP_BASE_URL}`, { extraHeaders: { token: localStorage.getItem("token") } }),

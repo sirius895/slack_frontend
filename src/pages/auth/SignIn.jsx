@@ -10,12 +10,12 @@ const SignIn = () => {
   const handleSignIn = useCallback(() => {
     (async () => await signIn(userInfo, navigate))();
   }, [userInfo, navigate]);
-  
+
   return (
-    <VStack w={"full"} h={"100vh"} bg={"var(--mainColor)"} justify={"center"} align={"center"} color={"white"} p={"4"}>
+    <HStack w={"full"} h={"100vh"} bg={"var(--mainColor)"} justify={"center"} align={"center"} color={"white"}>
       <VStack
         maxW={"400px"}
-        w={"100%"}
+        w={"50%"}
         h={"90%"}
         maxH={"560px"}
         bg={"var(--secondaryColor)"}
@@ -45,7 +45,7 @@ const SignIn = () => {
           Sign In
         </Button>
       </VStack>
-    </VStack>
+    </HStack>
   );
 };
 
