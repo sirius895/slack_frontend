@@ -6,7 +6,7 @@ import AuthProvider from "./providers/AuthProvider";
 import QueryProvider from "./providers/QueryProvider";
 
 import "./App.css";
-import Loading from "./components/Loading";
+import Loading from "./components/common/Loading";
 import AppRoutes from "./routes";
 
 const App = () => {

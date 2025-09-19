@@ -1,5 +1,5 @@
-import { Flex, Spinner, Text } from "@chakra-ui/react";
-import LoadingGif from "./common/LoadingGif";
+import { Flex } from "@chakra-ui/react";
+import LoadingGif from "./LoadingGif";
 
 const Loading = () => {
   return (

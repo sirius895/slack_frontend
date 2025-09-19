@@ -1,13 +1,7 @@
 import { useRoutes } from "react-router-dom"
 
 import Pages from "../pages"
-// import Auth from "../pages/auth"
-// import Main from "../pages/Main"
 import Layout from "../layouts"
-// // import SignIn from "../pages/auth/SignIn"
-// // import SignUp from "../pages/auth/SignUp"
-// import Icons from "../pages/Icons"
-// import NotFound from "../pages/NotFound"
 import SocketProvider from "../providers/SocketProvider"
 
 const routes = [
