@@ -1,4 +1,4 @@
-import { HStack, Text, useBreakpoint, useBreakpointValue, VStack } from "@chakra-ui/react";
+import { HStack, Text, useBreakpointValue, VStack } from "@chakra-ui/react";
 import { useContext, useEffect, useState } from "react";
 import { AiFillPushpin } from "react-icons/ai";
 import { FaFile, FaRegCommentDots } from "react-icons/fa";
@@ -35,7 +35,7 @@ const TabList = (props) => {
           <Text fontWeight={"extrabold"} fontFamily={"cursive"} color={"var(--mainColor)"}>
             {user?.username?.toUpperCase()}
           </Text>
-          <Text>{curChannel?.members?.length ? `+${curChannel?.members?.length - 1}` : ""}</Text>
+          <Text>{curChannel?.members?.length ? `+${curChannel?.members?.length - 1}M` : ""}</Text>
         </HStack>
       </HStack>
       <HStack w={"full"} flexGrow={1}>

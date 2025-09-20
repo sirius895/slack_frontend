@@ -11,9 +11,11 @@ const FileMark = (props) => {
     if (/(.pdf)$/.test(originalname)) return "pdf";
     else return "file";
   }, [originalname]);
+
   let previewURL = `${process.env.REACT_APP_BASE_URL}/files/${
     filename ? (type === "imgae" && filename) || (type === "pdf" && "bookmark.jpg") || (type === "file" && "file.png") : "default.gif"
   }`;
+
   let linkURL = `${process.env.REACT_APP_BASE_URL}/files/${filename}`;
   const downloadURL = `${process.env.REACT_APP_BASE_URL}/file/download/${filename}/${originalname}`;
 

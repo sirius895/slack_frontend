@@ -1,4 +1,4 @@
-import { Badge, Box, Flex, HStack, Spinner, Text, useBreakpointValue, VStack } from "@chakra-ui/react";
+import { Box, HStack, Spinner, Text, useBreakpointValue, VStack } from "@chakra-ui/react";
 import { useContext, useMemo, useState } from "react";
 import { AiFillPushpin } from "react-icons/ai";
 import { FaCommentDots, FaRegSmile, FaTrash } from "react-icons/fa";
@@ -6,13 +6,13 @@ import { FaCommentDots, FaRegSmile, FaTrash } from "react-icons/fa";
 import { METHODS, TYPES } from "../../constants/chat";
 import { AuthContext } from "../../providers/AuthProvider";
 import { SocketContext } from "../../providers/SocketProvider";
-import { formatTime, formatDate } from "../../utils/time";
+import { formatTime } from "../../utils/time";
 
+import { useNavigate, useParams } from "react-router-dom";
 import Emoticon from "./Emoticon";
 import Emoticons from "./Emoticons";
 import FileMark from "./FileMark";
 import UserAvatar from "./UserAvatar";
-import { useNavigate, useParams } from "react-router-dom";
 
 const Message = (props) => {
   const { message, showDate, ...etcProps } = props;

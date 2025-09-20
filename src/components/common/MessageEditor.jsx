@@ -216,7 +216,9 @@ const MessageEditor = ({ isForThread }) => {
           onChange={changeContent}
           onKeyDown={handleKeyDown}
           value={message.content}
-          placeholder={`To ${curChannel?._id && !curChannel?.isChannel ? users?.find((u) => u?._id === curChannel?.members[1])?.username : curChannel?.name}`}
+          placeholder={`To ${
+            curChannel?._id && !curChannel?.isChannel ? users?.find((u) => u?._id === curChannel?.members[1])?.username ?? "" : curChannel?.name ?? ""
+          }`}
         />
       </VStack>
       <HStack w={"full"} px={4} h={"32px"}>

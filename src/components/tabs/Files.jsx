@@ -5,7 +5,6 @@ import FileMark from "../common/FileMark";
 
 const Files = () => {
   const { messages } = useContext(SocketContext);
-  console.log(messages);
 
   const { imgs, pdfs, etcs } = useMemo(() => {
     const imgs = [];

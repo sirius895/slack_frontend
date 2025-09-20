@@ -14,7 +14,7 @@ import {
   Tooltip,
   VStack,
 } from "@chakra-ui/react";
-import { useContext, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import { FaCheck } from "react-icons/fa";
 import { METHODS, TYPES } from "../../constants/chat";
 import { AuthContext } from "../../providers/AuthProvider";
@@ -50,7 +50,7 @@ const ChannelModal = (props) => {
     } else setChannel(initState);
   }, [selectedID, setChannel]);
 
-  const handleCreate = () => {
+  const handleCreate = useCallback(() => {
     const err = createChannelValidator(channel);
     if (err) {
       toast.ERROR(err);
@@ -58,7 +58,7 @@ const ChannelModal = (props) => {
     }
     socket.emit(`${TYPES.CHANNEL}_${METHODS.CREATE}`, { ...channel, creator: user?._id, members: [...channel.members, user?._id] });
     handleCancel();
-  };
+  }, [user._id, channel]);
 
   const handleUpdate = () => {
     socket.emit(`${TYPES.CHANNEL}_${METHODS.UPDATE}`, channel);
@@ -78,7 +78,6 @@ const ChannelModal = (props) => {
   useEffect(() => {
     setTmp(users?.filter((u) => u?.username?.toLowerCase().includes(keyword.toLowerCase()) || u.email.toLowerCase().includes(keyword.toLowerCase())));
   }, [keyword]);
-  console.log(tmp);
 
   return (
     <Modal h={"full"} isOpen={modalStatus === "add" || modalStatus === "edit"} isCentered>
@@ -114,7 +113,7 @@ const ChannelModal = (props) => {
                     paddingBlock={2}
                     justify={"space-between"}
                     _hover={{ backgroundColor: "var(--mainColor)" }}
-                    backgroundColor={channel?.members?.includes(user._id) && "var(--mainColor)"}
+                    backgroundColor={channel?.members?.includes(u._id) && "var(--mainColor)"}
                   >
                     <HStack w={"full"} gap={4}>
                       <UserAvatar url={u?.avatar} w={"32px"} h={"32px"} />

@@ -1,6 +1,6 @@
 import { VStack } from "@chakra-ui/react"
-import ChannelList from "../components/main/ChannelList"
-import DMList from "../components/main/DMList"
+import ChannelList from "../components/navitems/ChannelList"
+import DMList from "../components/navitems/DMList"
 
 const MenuBar = () => {
     return (
