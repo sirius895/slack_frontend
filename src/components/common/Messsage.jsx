@@ -1,4 +1,4 @@
-import { Box, HStack, Spinner, Text, useBreakpointValue, VStack } from "@chakra-ui/react";
+import { Box, HStack, Spinner, Text, Tooltip, useBreakpointValue, VStack } from "@chakra-ui/react";
 import { useContext, useMemo, useState } from "react";
 import { AiFillPushpin } from "react-icons/ai";
 import { FaCommentDots, FaRegSmile, FaTrash } from "react-icons/fa";
@@ -78,7 +78,7 @@ const Message = (props) => {
       {message ? (
         <>
           <VStack flex="1" align="stretch" gap={2}>
-            <HStack align="center" flexWrap="wrap" gap={4} fontSize={fontSize1}>
+            <HStack align="center" flexWrap="wrap" gap={4} fontSize={fontSize1} flexDir={flexDir}>
               <UserAvatar w={"72px"} h={"72px"} url={message?.sender?.avatar} />
               <VStack flex={"1 1 0"} align={"flex-start"}>
                 <Text fontWeight="bold" fontSize={"24px"} color={"var(--mainColor)"} isTruncated maxW="70%">
@@ -98,7 +98,7 @@ const Message = (props) => {
                 </HStack>
               </VStack>
             </HStack>
-            <VStack w={"full"} flex={"1 1 0"} pl={"88px"} justify={"flex-start"} gap={2}>
+            <VStack w={"full"} flex={"1 1 0"} justify={"flex-start"} gap={2} pl={"24px"}>
               {message?.mentions?.length > 0 && (
                 <HStack w={"full"} justify={"flex-start"} flexWrap="wrap" gap={2} mt={1} fontSize="sm">
                   {message?.mentions?.map((m) => {
@@ -155,30 +155,37 @@ const Message = (props) => {
               flexWrap="wrap"
               onMouseLeave={() => setEmoShow(false)}
             >
-              <Box cursor="pointer" onClick={() => setEmoShow(!emoShow)} title="Add Emoji">
-                <FaRegSmile color={"ffcc00"} size={20} />
-                {emoShow && <Emoticons pos={"absolute"} top="100%" right={0} bg="#fff" p={2} boxShadow={"0 0 4px black"} w="300px" handleEmos={handleEmos} />}
-              </Box>
-              <Box cursor="pointer" onClick={handlePin} title="Pin/Unpin">
-                <AiFillPushpin size={20} color={"var(--mainColor)"} />
-              </Box>
-              {!message.parentID && curChannel.isChannel && (
-                <Box
-                  cursor="pointer"
-                  color={"var(--secondaryColor)"}
-                  onClick={() => {
-                    setShowThread(!showThread || messageID !== message._id);
-                    navigate(`/chatting/home/${channelID}/${message._id}`);
-                  }}
-                  title="Reply"
-                >
-                  <FaCommentDots size={20} />
+              <Tooltip label="Add emoji" hasArrow={true}>
+                <Box cursor="pointer" onClick={() => setEmoShow(!emoShow)}>
+                  <FaRegSmile color={"var(--mainColor)"} size={20} />
+                  {emoShow && <Emoticons pos={"absolute"} top="100%" right={0} bg="#fff" p={2} boxShadow={"0 0 4px black"} w="300px" handleEmos={handleEmos} />}
                 </Box>
+              </Tooltip>
+              <Tooltip label={"Pin/Unpin"} hasArrow={true}>
+                <Box cursor="pointer" onClick={handlePin}>
+                  <AiFillPushpin size={20} color={"var(--mainColor)"} />
+                </Box>
+              </Tooltip>
+              {!message.parentID && curChannel.isChannel && (
+                <Tooltip label={"Threads"} hasArrow={true}>
+                  <Box
+                    cursor="pointer"
+                    color={"var(--secondaryColor)"}
+                    onClick={() => {
+                      setShowThread(!showThread || messageID !== message._id);
+                      navigate(`/chatting/home/${channelID}/${message._id}`);
+                    }}
+                  >
+                    <FaCommentDots size={20} />
+                  </Box>
+                </Tooltip>
               )}
               {message.sender._id === user?._id && (
-                <Box cursor="pointer" color={"gray.400"} onClick={() => handleDelete(message._id)} title="Delete">
-                  <FaTrash size={20} />
-                </Box>
+                <Tooltip label={"Delete"} hasArrow={true}>
+                  <Box cursor="pointer" color={"gray.400"} onClick={() => handleDelete(message._id)} title="Delete">
+                    <FaTrash size={20} />
+                  </Box>
+                </Tooltip>
               )}
             </Box>
           )}

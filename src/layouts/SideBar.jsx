@@ -31,7 +31,7 @@ const SideBar = () => {
   const handleSignOut = () => {
     localStorage.removeItem("token");
     navigate("/");
-    sessionStorage.removeItem("nextURL");
+    // sessionStorage.removeItem("nextURL");
     socket.emit(`${TYPES.AUTH}_${METHODS.UPDATE}`, { state: 0 });
   };
 

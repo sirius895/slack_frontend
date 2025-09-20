@@ -17,8 +17,10 @@ const Messages = () => {
 
   const listenMessageCreate = useCallback(
     (status, data) => {
-      if (status && data && data.channelID === channel && !data.parentID) setMessages([...messages, data]);
-      else toast.ERROR(data.message);
+      if (status && data && data.channelID === channel && !data.parentID) {
+        if (data.mentions.includes(user._id)) toast.SUCCESS(`${data.sender.username} sent you a message!`);
+        setMessages([...messages, data]);
+      } else toast.ERROR(data.message);
     },
     [messages, setMessages]
   );

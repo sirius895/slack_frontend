@@ -19,44 +19,44 @@ const DMList = () => {
   const navigate = useNavigate();
   const { channel: channelID } = useParams();
 
-  const listenCreate = useCallback(
-    (status, data) => {
-      if (status && data) setChannels([...channels, data]);
-      else toast.ERROR(data.message);
-    },
-    [channels]
-  );
+  // const listenCreate = useCallback(
+  //   (status, data) => {
+  //     if (status && data) setChannels([...channels, data]);
+  //     else toast.ERROR(data.message);
+  //   },
+  //   [channels]
+  // );
 
-  const listenUpdate = useCallback(
-    (status, data) => {
-      if (status && data) setChannels((channels) => channels.map((c) => (c._id === data._id ? data : c)));
-      else toast.ERROR(data.message);
-    },
-    [channels, setChannels]
-  );
+  // const listenUpdate = useCallback(
+  //   (status, data) => {
+  //     if (status && data) setChannels((channels) => channels.map((c) => (c._id === data._id ? data : c)));
+  //     else toast.ERROR(data.message);
+  //   },
+  //   [channels, setChannels]
+  // );
 
-  const listenDelete = useCallback(
-    (status, data) => {
-      if (status && data) setChannels((channels) => channels.filter((c) => c._id !== data._id));
-      else toast.ERROR(data.message);
-    },
-    [channels, setChannels]
-  );
+  // const listenDelete = useCallback(
+  //   (status, data) => {
+  //     if (status && data) setChannels((channels) => channels.filter((c) => c._id !== data._id));
+  //     else toast.ERROR(data.message);
+  //   },
+  //   [channels, setChannels]
+  // );
 
-  useEffect(() => {
-    socket.on(`${TYPES.CHANNEL}_${METHODS.CREATE}`, listenCreate);
-    return () => socket.removeListener(`${TYPES.CHANNEL}_${METHODS.CREATE}`, listenCreate);
-  }, [listenCreate]);
+  // useEffect(() => {
+  //   socket.on(`${TYPES.CHANNEL}_${METHODS.CREATE}`, listenCreate);
+  //   return () => socket.removeListener(`${TYPES.CHANNEL}_${METHODS.CREATE}`, listenCreate);
+  // }, [listenCreate]);
 
-  useEffect(() => {
-    socket.on(`${TYPES.CHANNEL}_${METHODS.UPDATE}`, listenUpdate);
-    return () => socket.removeListener(`${TYPES.CHANNEL}_${METHODS.UPDATE}`, listenUpdate);
-  }, [listenUpdate]);
+  // useEffect(() => {
+  //   socket.on(`${TYPES.CHANNEL}_${METHODS.UPDATE}`, listenUpdate);
+  //   return () => socket.removeListener(`${TYPES.CHANNEL}_${METHODS.UPDATE}`, listenUpdate);
+  // }, [listenUpdate]);
 
-  useEffect(() => {
-    socket.on(`${TYPES.CHANNEL}_${METHODS.DELETE}`, listenDelete);
-    return () => socket.removeListener(`${TYPES.CHANNEL}_${METHODS.DELETE}`, listenDelete);
-  });
+  // useEffect(() => {
+  //   socket.on(`${TYPES.CHANNEL}_${METHODS.DELETE}`, listenDelete);
+  //   return () => socket.removeListener(`${TYPES.CHANNEL}_${METHODS.DELETE}`, listenDelete);
+  // });
 
   return (
     <VStack w={"full"} paddingInline={2}>

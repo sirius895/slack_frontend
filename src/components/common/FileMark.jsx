@@ -8,7 +8,7 @@ const FileMark = (props) => {
   const [down, setDown] = useState(false);
   const type = useMemo(() => {
     if (/(.gif|.jpg|.png)$/.test(originalname)) return "imgae";
-    if (/(.pdf)$/.test(originalname)) return "pdf";
+    else if (/(.pdf)$/.test(originalname)) return "pdf";
     else return "file";
   }, [originalname]);
 

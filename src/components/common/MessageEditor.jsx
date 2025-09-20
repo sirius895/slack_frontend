@@ -22,12 +22,13 @@ const MessageEditor = ({ isForThread }) => {
   const [italic, steItalic] = useState(false);
   const [fileListShow, setFileListShow] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
+  const [willSend, setWillSend] = useState(true);
+  const [files, setFiles] = useState({});
 
   const members = useMemo(() => {
     const memberIDs = channels.find((c) => c._id === channelID)?.members;
     return users.filter((u) => memberIDs?.includes(u._id));
   }, [channelID, channels, users]);
-  const [files, setFiles] = useState({});
 
   const initState = {
     sender: "",
@@ -47,13 +48,17 @@ const MessageEditor = ({ isForThread }) => {
     const value = e.target.value;
     if (value[value.length - 1] === "@") {
       setMentionShow(true);
-      return;
     }
+    if (value[value.length - 1] !== "@") setMentionShow(false);
     setMessage({ ...message, content: e.target.value });
   };
 
   const createMessage = async () => {
     try {
+      if (!message.content) {
+        toast.ERROR("Type some words.");
+        return;
+      }
       const formData = new FormData();
       for (let i = 0; i < files.length; i++) {
         formData.append("files", files[i]);
@@ -71,7 +76,12 @@ const MessageEditor = ({ isForThread }) => {
   const handleKeyDown = (e) => {
     if (messageID.length > 1 && isForThread) socket.emit(`${TYPES.TYPING}`, { channelID, messageID });
     if (e.code === "Escape") setMentionShow(false);
+    if (e.code === "ShiftRight") setWillSend(false);
     if (e.code === "Enter") {
+      if (!willSend) {
+        setWillSend(true);
+        return;
+      }
       e.preventDefault();
       if (channelID.length < 10) {
         toast.ERROR("Please choose a channel!");
@@ -94,7 +104,18 @@ const MessageEditor = ({ isForThread }) => {
     setMessage((msg) => ({
       ...msg,
       mentions: msg.mentions.find((m) => m === user?._id) ? msg.mentions.filter((m) => m !== user?._id) : [...msg.mentions, user?._id],
+      content: !msg.mentions.find((m) => m === user?._id) ? message?.content?.slice(0, message.content.length - 1) : message?.content,
     }));
+  };
+
+  const removeFile = (index) => {
+    const temp = [...files];
+    temp.splice(index, 1);
+    setFiles(temp);
+  };
+
+  const removeMention = (_id) => {
+    setMessage({ ...message, mentions: message.mentions.filter((m) => m !== _id) });
   };
 
   const listenTyping = (status, data) => {
@@ -129,17 +150,11 @@ const MessageEditor = ({ isForThread }) => {
   useEffect(() => {
     if (channelID.length > 0) setMessage((m) => ({ ...m, channelID }));
     socket.on(TYPES.TYPING, listenTyping);
+    setMessage(initState);
+    setFiles([]);
     return () => socket.removeListener(TYPES.TYPING, listenTyping);
-  }, [channelID]);
-
-  const removeFile = (index) => {
-    const temp = [...files];
-    temp.splice(index, 1);
-    setFiles(temp);
-  };
-  const removeMention = (_id) => {
-    setMessage({ ...message, mentions: message.mentions.filter((m) => m._id !== _id) });
-  };
+  }, [JSON.stringify(channelID)]);
+  console.log(channelID);
 
   return (
     <VStack w={"full"} h={"full"} rounded={8} shadow={"0 0 3px black"}>
@@ -167,19 +182,20 @@ const MessageEditor = ({ isForThread }) => {
         )}
         <HStack gap={4}>
           {message.mentions.map((m, i) => (
-            <Text key={i} fontFamily={"cursive"} fontWeight={"bold"} color={"var(--markUpColor)"} cursor={"pointer"} onClick={() => removeMention(m._id)}>
+            <Text key={i} fontFamily={"cursive"} fontWeight={"bold"} color={"var(--markUpColor)"} cursor={"pointer"} onClick={() => removeMention(m)}>
               @{users?.find((u) => u._id === m)?.username}
             </Text>
           ))}
         </HStack>
       </HStack>
-      {!isForThread && mentionShow && (
+      {!isForThread && mentionShow && message?.mentions?.length !== members.length - 1 && (
         <HStack w={"full"} pos={"relative"} onMouseLeave={() => setMentionShow(false)}>
           <VStack w={"80px"} pos={"absolute"} zIndex={5} rounded={"8px"} py={2} bg={"white"} shadow={"0 0 3px"} left={4} top={0}>
             {members.length ? (
               members?.map(
                 (m, i) =>
-                  m._id !== user._id && (
+                  m._id !== user._id &&
+                  !message?.mentions?.includes(m._id) && (
                     <Text
                       key={i}
                       w={"full"}
@@ -271,7 +287,7 @@ const MessageEditor = ({ isForThread }) => {
           </HStack>
         </HStack>
         <HStack>
-          <FaPaperPlane onClick={createMessage} />
+          <FaPaperPlane color="var(--mainColor)" onClick={createMessage} />
         </HStack>
       </HStack>
     </VStack>

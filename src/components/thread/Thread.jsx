@@ -9,13 +9,13 @@ import MessageEditor from "../common/MessageEditor";
 import Message from "../common/Messsage";
 import { AuthContext } from "../../providers/AuthProvider";
 
-const Thread = () => {
+const Thread = (props) => {
   const { setShowThread, socket, messages: _messages } = useContext(SocketContext);
   const { user } = useContext(AuthContext);
   const [messages, setMessages] = useState([]);
   const { message } = useParams();
   const messageRef = useRef(null);
-  const parentMessage = useMemo(() => _messages.find((m) => m._id === message), [messages]);
+  const parentMessage = useMemo(() => _messages.find((m) => m._id === message), [_messages]);
 
   const listenMessageReadByParentID = (status, data) => {
     if (status && data) setMessages(data);
@@ -78,7 +78,7 @@ const Thread = () => {
   }, [messages.length]);
 
   return (
-    <VStack w={"300px"} h={"full"} bg={"white"} shadow={"0 0 4px black"} roundedRight={"8px"}>
+    <VStack w={"300px"} h={"full"} bg={"white"} shadow={"0 0 4px black"} roundedRight={"8px"} {...props}>
       <VStack w={"full"} h={"100px"} px={4} pt={4}>
         <HStack w={"full"} h={"full"} justify={"space-between"} align={"flex-start"}>
           <Text fontWeight={"extrabold"} fontSize={"20px"}>
@@ -90,10 +90,10 @@ const Thread = () => {
       <VStack w={"full"} flex={"1 1 0"} py={4}>
         <VStack w={"full"} p={4} flex={"1 1 0"} overflowY={"auto"} scrollBehavior={"smooth"} gap={4}>
           <VStack w={"full"} ref={messageRef} gap={4}>
-            {messages ? (
+            {messages && parentMessage?._id ? (
               <>
-                <Message message={parentMessage} />
-                <Divider />
+                <Message message={{ ...parentMessage, parentID: "@" }} />
+                <Divider borderWidth={"2px"} />
                 {messages.length ? (
                   messages.map((m, i) => (
                     <HStack w={"full"} key={i} justify={m.sender._id !== user?._id && "flex-end"}>

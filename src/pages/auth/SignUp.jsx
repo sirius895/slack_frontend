@@ -42,7 +42,7 @@ const SignUp = () => {
         <Text fontSize={24}>Sign Up</Text>
         <FormLabel>
           <Avatar src={avatar} w={"100px"} h={"100px"} />
-          <Input type="file" display={"none"} onChange={handleAvatar}></Input>
+          <Input type="file" accept="image/*" display={"none"} onChange={handleAvatar}></Input>
         </FormLabel>
         <Input borderColor={"var(--fontColor)"} placeholder={"Name"} type={"text"} name="username" value={userInfo.username} onChange={changeUserInfo} />
         <Input borderColor={"var(--fontColor)"} placeholder={"Email"} type={"text"} name="email" value={userInfo.email} onChange={changeUserInfo} />

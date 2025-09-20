@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useMemo, useState } from "react";
+import { createContext, useContext, useEffect, useMemo, useState, useCallback } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { io } from "socket.io-client";
 import { METHODS, TYPES } from "../constants/chat";
@@ -101,9 +101,50 @@ const SocketProvider = ({ children }) => {
     };
   }, [channel]);
 
+  const listenCreate = useCallback(
+    (status, data) => {
+      if (status && data) setChannels([...channels, data]);
+      else toast.ERROR(data.message);
+    },
+    [channels, setChannels]
+  );
+
+  const listenUpdate = useCallback(
+    (status, data) => {
+      if (status && data) {
+        // setChannels(channels => channels.map((c) => c._id === data._id ? data : c))
+        socket.emit(`${TYPES.CHANNEL}_${METHODS.READ_BY_USER_ID}`, user?._id);
+      } else toast.ERROR(data.message);
+    },
+    [socket, user?._id]
+  );
+
+  const listenDelete = useCallback(
+    (status, data) => {
+      if (status && data) setChannels((channels) => channels.filter((c) => c._id !== data._id));
+      else toast.ERROR(data.message);
+    },
+    [setChannels]
+  );
+
+  useEffect(() => {
+    socket.on(`${TYPES.CHANNEL}_${METHODS.CREATE}`, listenCreate);
+    return () => socket.removeListener(`${TYPES.CHANNEL}_${METHODS.CREATE}`, listenCreate);
+  }, [listenCreate, socket]);
+
+  useEffect(() => {
+    socket.on(`${TYPES.CHANNEL}_${METHODS.UPDATE}`, listenUpdate);
+    return () => socket.removeListener(`${TYPES.CHANNEL}_${METHODS.UPDATE}`, listenUpdate);
+  });
+
+  useEffect(() => {
+    socket.on(`${TYPES.CHANNEL}_${METHODS.DELETE}`, listenDelete);
+    return () => socket.removeListener(`${TYPES.CHANNEL}_${METHODS.DELETE}`, listenDelete);
+  });
+
   useEffect(() => {
     setShowThread(message.length > 10 ? true : false);
-  }, []);
+  }, [message]);
 
   return (
     <SocketContext.Provider
