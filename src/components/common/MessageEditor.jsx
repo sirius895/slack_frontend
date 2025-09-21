@@ -1,5 +1,5 @@
 import { Box, Fade, FormLabel, HStack, Input, Spinner, Text, Textarea, transform, VStack } from "@chakra-ui/react";
-import { useContext, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 import { FaBold, FaItalic, FaPaperPlane, FaPlus, FaRegSmile } from "react-icons/fa";
 import { useParams } from "react-router-dom";
 import { upload } from "../../api/file";
@@ -64,7 +64,7 @@ const MessageEditor = ({ isForThread }) => {
         formData.append("files", files[i]);
       }
       const res = await upload(formData, setUploadProgress);
-      socket.emit(`${TYPES.MESSAGE}_${METHODS.CREATE}`, { ...message, files: res.data.payload.map((f) => f._id) });
+      socket.emit(`${TYPES.MESSAGE}_${METHODS.CREATE}`, { ...message, sender: user._id, files: res.data.payload.map((f) => f._id) });
       setMessage({ ...initState, sender: user?._id, channelID });
     } catch (error) {
       toast("Upload failed. Try again.");
@@ -139,13 +139,16 @@ const MessageEditor = ({ isForThread }) => {
       emoticons: msg.emoticons.filter((m, i) => i !== no),
     }));
 
-  const handleFiles = (e) => {
-    setFiles(e.target.files);
-  };
+  const handleFiles = useCallback(
+    (e) => {
+      setFiles([...files, ...e.target.files]);
+    },
+    [files]
+  );
 
   useEffect(() => {
     if (user?._id) setMessage((m) => ({ ...m, sender: user?._id }));
-  }, [user?._id]);
+  }, [user._id]);
 
   useEffect(() => {
     if (channelID.length > 0) setMessage((m) => ({ ...m, channelID }));
@@ -254,7 +257,7 @@ const MessageEditor = ({ isForThread }) => {
             <FaRegSmile cursor={"pointer"} onClick={() => setEmoShow(!emoShow)} />
             {emoShow && <Emoticons w={"300px"} pos={"absolute"} bottom={"100%"} left={0} handleEmos={handleEmos} />}
           </HStack>
-          <HStack pos={"relative"}>
+          <HStack pos={"relative"} gap={2}>
             {files.length && (
               <Box onClick={() => setFileListShow(!fileListShow)}>
                 <Text>
@@ -262,7 +265,7 @@ const MessageEditor = ({ isForThread }) => {
                 </Text>
               </Box>
             )}
-            {uploadProgress && uploadProgress < 100 && <Spinner label="upoloading" color="var(--mainColor)" />}
+            {uploadProgress && uploadProgress < 100 && <Spinner label="uploading" color="var(--mainColor)" />}
             <Text>{uploadProgress ? `${uploadProgress}%` : null}</Text>
             <VStack
               h={"120px"}

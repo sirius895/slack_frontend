@@ -18,7 +18,7 @@ const Messages = () => {
   const listenMessageCreate = useCallback(
     (status, data) => {
       if (status && data && data.channelID === channel && !data.parentID) {
-        if (data.mentions.includes(user._id)) toast.SUCCESS(`${data.sender.username} sent you a message!`);
+        if (data.mentions.includes(user._id)) toast.SUCCESS(`${data.sender.username} mentioned you!`);
         setMessages([...messages, data]);
       } else toast.ERROR(data.message);
     },
@@ -73,7 +73,7 @@ const Messages = () => {
                   m.channelID === channel &&
                   !m.parentID && (
                     <VStack w={"full"} gap={4} key={i} align={m.sender._id !== user?._id ? "flex-end" : "flex-start"}>
-                      {i > 1 && formatDate(messages[i - 1]?.createdAt) !== formatDate(m?.createdAt) && (
+                      {formatDate(messages[i - 1]?.createdAt) !== formatDate(m?.createdAt) && (
                         <HStack w={"full"}>
                           <Divider border={"2px"} borderRadius={"2xl"} />
                           <Text>{formatDate(m.createdAt)}</Text>

@@ -35,7 +35,7 @@ const TabList = (props) => {
           <Text fontWeight={"extrabold"} fontFamily={"cursive"} color={"var(--mainColor)"}>
             {user?.username?.toUpperCase()}
           </Text>
-          <Text>{curChannel?.members?.length ? `+${curChannel?.members?.length - 1} members` : ""}</Text>
+          <Text>{curChannel?.members?.length ? `+${curChannel?.members?.length - 1}` : ""}</Text>
         </HStack>
       </HStack>
       <HStack w={"full"} flexGrow={1}>

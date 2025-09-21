@@ -166,7 +166,7 @@ const Message = (props) => {
                   <AiFillPushpin size={20} color={"var(--mainColor)"} />
                 </Box>
               </Tooltip>
-              {!message.parentID && curChannel.isChannel && (
+              {!message.parentID && curChannel?.isChannel && (
                 <Tooltip label={"Threads"} hasArrow={true}>
                   <Box
                     cursor="pointer"

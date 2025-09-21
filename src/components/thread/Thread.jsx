@@ -15,7 +15,7 @@ const Thread = (props) => {
   const [messages, setMessages] = useState([]);
   const { message } = useParams();
   const messageRef = useRef(null);
-  const parentMessage = useMemo(() => _messages.find((m) => m._id === message), [_messages]);
+  const parentMessage = useMemo(() => _messages.find((m) => m._id === message), [_messages, message]);
 
   const listenMessageReadByParentID = (status, data) => {
     if (status && data) setMessages(data);
@@ -92,7 +92,7 @@ const Thread = (props) => {
           <VStack w={"full"} ref={messageRef} gap={4}>
             {messages && parentMessage?._id ? (
               <>
-                <Message message={{ ...parentMessage, parentID: "@" }} />
+                {/* <Message message={{ ...parentMessage, parentID: "@" }} /> */}
                 <Divider borderWidth={"2px"} />
                 {messages.length ? (
                   messages.map((m, i) => (

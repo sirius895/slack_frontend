@@ -1,13 +1,22 @@
 import { Button, Checkbox, FormLabel, HStack, Input, Text, VStack } from "@chakra-ui/react";
-import { useCallback, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { signIn } from "../../api/auth";
 
 const SignIn = () => {
   const [userInfo, setUserInfo] = useState({ email: "", password: "" });
-  const changeUserInfo = (e) => setUserInfo({ ...userInfo, [e.target.name]: e.target.value });
+  const emailRef = useRef(null);
+  const changeUserInfo = (e) => {
+    setUserInfo({ ...userInfo, [e.target.name]: e.target.value });
+    return;
+  };
   const navigate = useNavigate();
   const handleSignIn = useCallback(() => {
+    if(emailRef.current.validationMessage) {
+      console.log(emailRef.current.validationMessage);
+      emailRef.current.focus();
+      // return;
+    }
     (async () => await signIn(userInfo, navigate))();
   }, [userInfo, navigate]);
 
@@ -27,7 +36,7 @@ const SignIn = () => {
         px={8}
       >
         <Text fontSize={24}>Please Sign In</Text>
-        <Input bg={"transparent"} placeholder={"Email"} type={"text"} name="email" value={userInfo.email} onChange={changeUserInfo} />
+        <Input type="email" ref={emailRef} bg={"transparent"} placeholder={"Email"} name="email" value={userInfo.email} onChange={changeUserInfo} />
         <Input bg={"transparent"} placeholder={"Password"} type={"password"} name="password" value={userInfo.password} onChange={changeUserInfo} />
         <HStack w={"full"} justify={"flex-start"}>
           <FormLabel display={"flex"}>

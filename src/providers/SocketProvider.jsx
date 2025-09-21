@@ -44,7 +44,7 @@ const SocketProvider = ({ children }) => {
 
     socket.on("disconnect", () => {
       setIsConnected(false);
-      toast.ERROR("Socket disconnected!");
+      // toast.ERROR("Socket disconnected!");
     });
   }, []);
 
@@ -76,7 +76,7 @@ const SocketProvider = ({ children }) => {
   useEffect(() => {
     if (user?._id) {
       socket.emit(TYPES.AUTH, token);
-      socket.emit(`${TYPES.AUTH}_${METHODS.UPDATE}`, { state: user.state });
+      socket.emit(`${TYPES.AUTH}_${METHODS.UPDATE}`, { state: 3 });
       socket.emit(`${TYPES.CHANNEL}_${METHODS.READ_BY_USER_ID}`, user?._id);
       socket.on(`${TYPES.CHANNEL}_${METHODS.READ_BY_USER_ID}`, listenChannelReadByUserID);
     }

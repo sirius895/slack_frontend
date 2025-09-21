@@ -13,7 +13,7 @@ export const signIn = async (data, navigate) => {
     const res = await api.post("/auth/signin", data);
     const status = res.data.status;
     const message = res.data.message;
-    toast[status](message);
+    // toast[status](message);
     if (status !== resState.SUCCESS) return;
     const token = res.data.payload;
     localStorage.setItem("token", token);
@@ -43,7 +43,7 @@ export const signUp = async (data, navigate) => {
     // const res = await api.post("/auth/signup", data);
     const status = res.data.status;
     const message = res.data.message;
-    toast[status](message);
+    // toast[status](message);
     if (status !== resState.SUCCESS) return;
     navigate("/");
   } catch (error) {

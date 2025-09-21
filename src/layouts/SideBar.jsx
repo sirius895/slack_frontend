@@ -25,6 +25,9 @@ const SideBar = () => {
     { label: "Online", state: 3 },
     { label: "Sign Out", state: 0 },
   ];
+
+  console.log(user);
+
   const changeState = (state) => {
     socket.emit(`${TYPES.AUTH}_${METHODS.UPDATE}`, { state });
   };

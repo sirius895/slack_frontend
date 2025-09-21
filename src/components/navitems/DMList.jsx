@@ -97,7 +97,7 @@ const DMList = () => {
                       showState={true}
                       state={users.find((u) => u._id === channel?.members?.find((m) => m !== user?._id))?.state}
                     />
-                    <Text>{users.find((u) => u._id === channel?.members?.find((m) => m !== user?._id))?.username?.toUpperCase()}</Text>
+                    <Text>{users.find((u) => u._id === channel?.members?.find((m) => m !== user?._id))?.email/* ?.toUpperCase() */}</Text>
                   </HStack>
                   <HStack gap={2}>
                     {channel.creator === user?._id && (
