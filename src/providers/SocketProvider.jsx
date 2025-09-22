@@ -127,6 +127,47 @@ const SocketProvider = ({ children }) => {
     [setChannels]
   );
 
+  const listenMessageCreate = useCallback(
+    (status, data) => {
+      if (status && data && data.channelID === channel && !data.parentID) {
+        if (data.mentions.includes(user._id)) toast.SUCCESS(`${data.sender.username} mentioned you!`);
+        setMessages([...messages, data]);
+      } else toast.ERROR(data.message);
+    },
+    [messages, setMessages]
+  );
+
+  const listenMessageUpdate = useCallback(
+    (status, data) => {
+      if (status && data && data.channelID === channel && !data.parentID) setMessages((msgs) => msgs.map((msg) => (msg._id === data._id ? data : msg)));
+      else toast.ERROR(data.message);
+    },
+    [messages, setMessages]
+  );
+
+  const listenMessageDelete = useCallback(
+    (status, data) => {
+      if (status && data && data.channelID === channel && !data.parentID) setMessages((msgs) => msgs.filter((m) => m._id !== data._id));
+      else toast.ERROR(data.message);
+    },
+    [messages, setMessages]
+  );
+
+  useEffect(() => {
+    listenMessageCreate && socket.on(`${TYPES.MESSAGE}_${METHODS.CREATE}`, listenMessageCreate);
+    return () => socket.removeListener(`${TYPES.MESSAGE}_${METHODS.CREATE}`, listenMessageCreate);
+  }, [listenMessageCreate, messages]);
+
+  useEffect(() => {
+    listenMessageUpdate && socket.on(`${TYPES.MESSAGE}_${METHODS.UPDATE}`, listenMessageUpdate);
+    return () => socket.removeListener(`${TYPES.MESSAGE}_${METHODS.UPDATE}`, listenMessageUpdate);
+  }, [listenMessageUpdate, socket]);
+
+  useEffect(() => {
+    listenMessageDelete && socket.on(`${TYPES.MESSAGE}_${METHODS.DELETE}`, listenMessageDelete);
+    return () => socket.removeListener(`${TYPES.MESSAGE}_${METHODS.DELETE}`, listenMessageDelete);
+  }, [listenMessageDelete, socket]);
+
   useEffect(() => {
     socket.on(`${TYPES.CHANNEL}_${METHODS.CREATE}`, listenCreate);
     return () => socket.removeListener(`${TYPES.CHANNEL}_${METHODS.CREATE}`, listenCreate);

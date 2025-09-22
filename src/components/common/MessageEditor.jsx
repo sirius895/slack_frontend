@@ -55,8 +55,8 @@ const MessageEditor = ({ isForThread }) => {
 
   const createMessage = async () => {
     try {
-      if (!message.content) {
-        toast.ERROR("Type some words.");
+      if (!(message.content || files.length)) {
+        toast.ERROR("Type some words of files.");
         return;
       }
       const formData = new FormData();
@@ -73,8 +73,8 @@ const MessageEditor = ({ isForThread }) => {
     setUploadProgress(0);
   };
 
-  const handleKeyDown = (e) => {    
-    if (messageID.length > 1 && isForThread) socket.emit(`${TYPES.TYPING}`, { channelID, messageID });
+  const handleKeyDown = (e) => {
+    /*if (messageID.length > 1  && isForThread )*/ socket.emit(`${TYPES.TYPING}`, { channelID, messageID, isForThread });
     if (e.code === "Escape") setMentionShow(false);
     if (e.code === "ShiftRight") setWillSend(false);
     if (e.code === "Enter") {
@@ -106,6 +106,7 @@ const MessageEditor = ({ isForThread }) => {
       mentions: msg.mentions.find((m) => m === user?._id) ? msg.mentions.filter((m) => m !== user?._id) : [...msg.mentions, user?._id],
       content: !msg.mentions.find((m) => m === user?._id) ? message?.content?.slice(0, message.content.length - 1) : message?.content,
     }));
+    setMentionShow(false);
   };
 
   const removeFile = (index) => {
@@ -119,7 +120,7 @@ const MessageEditor = ({ isForThread }) => {
   };
 
   const listenTyping = (status, data) => {
-    if (status && data.messageID === messageID && isForThread) {
+    if (status && (isForThread ? data.isForThread && data.messageID === messageID : !data.isForThread && data.channelID === channelID)) {
       const removeUser = () => setTypingList((prev) => prev.filter((user) => user !== data.user));
       setTypingList((prev) => {
         if (prev.some((user) => user === data.user)) {
@@ -256,6 +257,11 @@ const MessageEditor = ({ isForThread }) => {
           <HStack pos={"relative"} onMouseLeave={() => setEmoShow(false)}>
             <FaRegSmile cursor={"pointer"} onClick={() => setEmoShow(!emoShow)} />
             {emoShow && <Emoticons w={"300px"} pos={"absolute"} bottom={"100%"} left={0} handleEmos={handleEmos} />}
+          </HStack>
+          <HStack>
+            <Text cursor={"pointer"} onClick={() => setMentionShow(!mentionShow)}>
+              @
+            </Text>
           </HStack>
           <HStack pos={"relative"} gap={2}>
             {files.length && (

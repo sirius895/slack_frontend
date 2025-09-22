@@ -20,8 +20,8 @@ const Pins = () => {
           messages
             .filter((m) => m.pinnedBy.includes(user?._id))
             .map((m, i) => (
-              <HStack key={i} w={"full"} justify={m.sender._id !== user?._id && "flex-end"}>
-                <Message key={i} message={m} w={"90%"} maxW={"600px"} />
+              <HStack key={i} w={"full"} /* justify={m.sender._id !== user?._id && "flex-end"} */>
+                <Message key={i} message={m} w={"100%"} /* maxW={"600px"} */ />
               </HStack>
             ))}
       </VStack>

@@ -42,6 +42,7 @@ const SideBar = () => {
     if (status && data) setUser(data);
     else toast.ERROR(data.message);
   };
+  
   const listenBroadcast = (status, data) => {
     if (status && data) setUsers((users) => users.map((u) => (u._id === data._id ? data : u)));
     else toast.ERROR(data.message);

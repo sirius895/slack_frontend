@@ -172,8 +172,11 @@ const Message = (props) => {
                     cursor="pointer"
                     color={"var(--secondaryColor)"}
                     onClick={() => {
+                      const tmp = "@";
                       setShowThread(!showThread || messageID !== message._id);
-                      navigate(`/chatting/home/${channelID}/${message._id}`);
+
+                      navigate(`/chatting/home/${channelID}/${!showThread || messageID !== message._id ? message._id : tmp}`);
+                      // navigate(`/chatting/home/${channelID}/${message._id}`);
                     }}
                   >
                     <FaCommentDots size={20} />

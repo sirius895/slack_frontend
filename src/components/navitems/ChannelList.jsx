@@ -1,11 +1,9 @@
 import { HStack, Text, VStack } from "@chakra-ui/react";
-import { useCallback, useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import { FaCaretDown, FaCaretRight, FaEdit, FaPlus, FaTrash } from "react-icons/fa";
 import { useNavigate, useParams } from "react-router-dom";
-import { METHODS, TYPES } from "../../constants/chat";
 import { AuthContext } from "../../providers/AuthProvider";
 import { SocketContext } from "../../providers/SocketProvider";
-import toast from "../../utils/toast";
 import ChannelDeleteModal from "../modals/ChannelDeleteModal";
 import CreateChannelModal from "../modals/ChannelModal";
 

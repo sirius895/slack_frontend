@@ -1,7 +1,7 @@
 import { Divider, HStack, Spinner, Text, VStack } from "@chakra-ui/react";
 import { useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 import { FaTimes } from "react-icons/fa";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { METHODS, TYPES } from "../../constants/chat";
 import { SocketContext } from "../../providers/SocketProvider";
 import toast from "../../utils/toast";
@@ -13,9 +13,10 @@ const Thread = (props) => {
   const { setShowThread, socket, messages: _messages } = useContext(SocketContext);
   const { user } = useContext(AuthContext);
   const [messages, setMessages] = useState([]);
-  const { message } = useParams();
+  const { message, channel } = useParams();
   const messageRef = useRef(null);
   const parentMessage = useMemo(() => _messages.find((m) => m._id === message), [_messages, message]);
+  const navigate = useNavigate();
 
   const listenMessageReadByParentID = (status, data) => {
     if (status && data) setMessages(data);
@@ -47,7 +48,7 @@ const Thread = (props) => {
   );
 
   useEffect(() => {
-    listenMessageCreate && socket.on(`${TYPES.MESSAGE}_${METHODS.READ_BY_PARENT_ID}`, listenMessageReadByParentID);
+    listenMessageReadByParentID && socket.on(`${TYPES.MESSAGE}_${METHODS.READ_BY_PARENT_ID}`, listenMessageReadByParentID);
     return () => socket.removeListener(`${TYPES.MESSAGE}_${METHODS.READ_BY_CHANNEL_ID}`, listenMessageReadByParentID);
   }, [message]);
 
@@ -84,7 +85,13 @@ const Thread = (props) => {
           <Text fontWeight={"extrabold"} fontSize={"20px"}>
             Thread
           </Text>
-          <FaTimes cursor={"pointer"} onClick={() => setShowThread(false)} />
+          <FaTimes
+            cursor={"pointer"}
+            onClick={() => {
+              setShowThread(false);
+              navigate(`/chatting/home/${channel}/@`);
+            }}
+          />
         </HStack>
       </VStack>
       <VStack w={"full"} flex={"1 1 0"} py={4}>
@@ -96,8 +103,12 @@ const Thread = (props) => {
                 <Divider borderWidth={"2px"} />
                 {messages.length ? (
                   messages.map((m, i) => (
-                    <HStack w={"full"} key={i} justify={m.sender._id !== user?._id && "flex-end"}>
-                      <Message message={m} w={"100%"} maxW={"300px"} />
+                    <HStack
+                      w={"full"}
+                      key={i}
+                      // justify={m.sender._id !== user?._id && "flex-end"}
+                    >
+                      <Message message={m} w={"100%"} /* maxW={"300px"} */ />
                     </HStack>
                   ))
                 ) : (

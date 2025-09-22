@@ -15,53 +15,11 @@ const Messages = () => {
   const { channel } = useParams();
   const { user } = useContext(AuthContext);
 
-  const listenMessageCreate = useCallback(
-    (status, data) => {
-      if (status && data && data.channelID === channel && !data.parentID) {
-        if (data.mentions.includes(user._id)) toast.SUCCESS(`${data.sender.username} mentioned you!`);
-        setMessages([...messages, data]);
-      } else toast.ERROR(data.message);
-    },
-    [messages, setMessages]
-  );
-
-  const listenMessageUpdate = useCallback(
-    (status, data) => {
-      if (status && data && data.channelID === channel && !data.parentID) setMessages((msgs) => msgs.map((msg) => (msg._id === data._id ? data : msg)));
-      else toast.ERROR(data.message);
-    },
-    [messages, setMessages]
-  );
-
-  const listenMessageDelete = useCallback(
-    (status, data) => {
-      if (status && data && data.channelID === channel && !data.parentID) setMessages((msgs) => msgs.filter((m) => m._id !== data._id));
-      else toast.ERROR(data.message);
-    },
-    [messages, setMessages]
-  );
-
-  useEffect(() => {
-    listenMessageCreate && socket.on(`${TYPES.MESSAGE}_${METHODS.CREATE}`, listenMessageCreate);
-    return () => socket.removeListener(`${TYPES.MESSAGE}_${METHODS.CREATE}`, listenMessageCreate);
-  }, [listenMessageCreate, messages]);
-
-  useEffect(() => {
-    listenMessageUpdate && socket.on(`${TYPES.MESSAGE}_${METHODS.UPDATE}`, listenMessageUpdate);
-    return () => socket.removeListener(`${TYPES.MESSAGE}_${METHODS.UPDATE}`, listenMessageUpdate);
-  }, [listenMessageUpdate, socket]);
-
-  useEffect(() => {
-    listenMessageDelete && socket.on(`${TYPES.MESSAGE}_${METHODS.DELETE}`, listenMessageDelete);
-    return () => socket.removeListener(`${TYPES.MESSAGE}_${METHODS.DELETE}`, listenMessageDelete);
-  }, [listenMessageDelete, socket]);
-
   useEffect(() => {
     const messageH = messageRef?.current?.getClientRects()[0].height;
     const parentH = messageRef?.current?.parentElement.getClientRects()[0].height;
     if (parentH <= messageH) messageRef.current.parentElement.scrollBy(0, messageH - parentH + 60);
   }, [messages.length]);
-
   return (
     <HStack w={"full"} h={"full"}>
       <VStack flex={"1 1 0"} h={"full"} p={4}>
@@ -72,7 +30,9 @@ const Messages = () => {
                 (m, i) =>
                   m.channelID === channel &&
                   !m.parentID && (
-                    <VStack w={"full"} gap={4} key={i} align={m.sender._id !== user?._id ? "flex-end" : "flex-start"}>
+                    <VStack w={"full"} gap={4} key={i} 
+                    // align={m.sender._id !== user?._id ? "flex-end" : "flex-start" }
+                    >
                       {formatDate(messages[i - 1]?.createdAt) !== formatDate(m?.createdAt) && (
                         <HStack w={"full"}>
                           <Divider border={"2px"} borderRadius={"2xl"} />
@@ -80,7 +40,7 @@ const Messages = () => {
                           <Divider border={"2px"} borderRadius={"2xl"} />
                         </HStack>
                       )}
-                      <Message message={m} w={"100%"} maxW={"600px"} />
+                      <Message message={m} w={"100%"} /* maxW={"600px"} */ />
                     </VStack>
                   )
               )}
