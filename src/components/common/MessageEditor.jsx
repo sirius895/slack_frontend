@@ -73,7 +73,7 @@ const MessageEditor = ({ isForThread }) => {
     setUploadProgress(0);
   };
 
-  const handleKeyDown = (e) => {
+  const handleKeyDown = (e) => {    
     if (messageID.length > 1 && isForThread) socket.emit(`${TYPES.TYPING}`, { channelID, messageID });
     if (e.code === "Escape") setMentionShow(false);
     if (e.code === "ShiftRight") setWillSend(false);

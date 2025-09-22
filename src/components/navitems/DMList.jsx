@@ -97,17 +97,17 @@ const DMList = () => {
                       showState={true}
                       state={users.find((u) => u._id === channel?.members?.find((m) => m !== user?._id))?.state}
                     />
-                    <Text>{users.find((u) => u._id === channel?.members?.find((m) => m !== user?._id))?.email/* ?.toUpperCase() */}</Text>
+                    <Text>{users.find((u) => u._id === channel?.members?.find((m) => m !== user?._id))?.username?.toUpperCase()}</Text>
                   </HStack>
                   <HStack gap={2}>
-                    {channel.creator === user?._id && (
+                    {/* {channel.creator === user?._id && (
                       <FaEdit
                         onClick={() => {
                           setSelectedID(i);
                           setModalStatus("edit");
                         }}
                       />
-                    )}
+                    )} */}
                     {channel.creator === user?._id && (
                       <FaTrash
                         onClick={() => {
